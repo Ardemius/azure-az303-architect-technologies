@@ -1,0 +1,122 @@
+= Microsoft Azure Architect Technologies AZ-303
+Thomas SCHWENDER <https://github.com/ardemius[@ardemius]>
+// Handling GitHub admonition blocks icons
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+:imagesdir: ./images
+:source-highlighter: highlightjs
+// Next 2 ones are to handle line breaks in some particular elements (list, footnotes, etc.)
+:lb: pass:[<br> +]
+:sb: pass:[<br>]
+// check https://github.com/Ardemius/personal-wiki/wiki/AsciiDoctor-tips for tips on table of content in GitHub
+:toc: macro
+:toclevels: 4
+// To turn off figure caption labels and numbers
+:figure-caption!:
+:sectnums:
+
+toc::[]
+
+== Examen et ressources de préparation
+
+Microsoft AZ-900 examen : https://docs.microsoft.com/fr-fr/learn/certifications/exams/az-303
+
+[IMPORTANT] 
+====
+Exam updated on 2025/05/25 ! +
+The differences with the previous plan can found here: https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4psD6
+====
+
+Exam plan : 
+
+    1. Implement and Monitor an Azure Infrastructure (50-55%)
+    2. Implement Management and Security Solutions (25-30%)
+    3. Implement Solutions for Apps (10-15%)
+    4. Implement and Manage Data Platforms (10-15%)
+
+Déroulement de la certification :
+
+    * 40 à 60 questions sur 1 heure
+    * score minimum de 700 / 1000
+
+NOTE: Pour plus d'informations sur la certification AZ-303, voir la description faite par testprep training : https://www.testpreptraining.com/tutorial/exam-az-303-microsoft-azure-architect-technologies/
+
+[NOTE]
+====
+Pour constater plus en détails la différence entre les ressources de cours Microsoft Learn et les autres disponibles (MOOC, sites, etc.), je me suis principalement servi du cours de *Scott Duffy* sur *Udemy* (https://www.udemy.com/course/70534-azure) pour me préparer.
+
+Pour rappel, pour l'AZ-900 sur les fondamentaux d'Azure, je m'étais principalement (mais pas que 😉) servi de Microsoft Learn.
+
+Comme d'habitude, une partie des autres ressources dont je me suis servi est disponible dans la section link:#_ressources[Ressources]
+====
+
+== Implement and Monitor an Azure Infrastructure
+
+XXX
+
+== Ressources
+
+D'autres sites permettant de préparer la certification :
+
+    * Le cours Udemy de Scott Duffy (payant) : https://www.udemy.com/course/70534-azure
+
+Sites d'examens blancs (mock exams), questions / réponses pour s'entraîner : 
+
+    * xxx
+
+== Mock exams
+
+=== Free exam from XXX
+
+----
+Q1) Some question
+
+ ✅ good
+ ❌ bad
+
+
+Q2) Some other question
+----
+
+== Lexique
+
+[glossary]
+XXX:: test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

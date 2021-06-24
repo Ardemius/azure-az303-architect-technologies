@@ -19,9 +19,14 @@ endif::[]
 // check https://github.com/Ardemius/personal-wiki/wiki/AsciiDoctor-tips for tips on table of content in GitHub
 :toc: macro
 :toclevels: 4
+// To number the sections of the table of contents
+:sectnums:
 // To turn off figure caption labels and numbers
 :figure-caption!:
-:sectnums:
+// Same for examples
+//:example-caption!:
+// To turn off ALL captions
+// :caption:
 
 toc::[]
 
@@ -58,19 +63,187 @@ Pour rappel, pour l'AZ-900 sur les fondamentaux d'Azure, je m'étais principalem
 Comme d'habitude, une partie des autres ressources dont je me suis servi est disponible dans la section link:#_ressources[Ressources]
 ====
 
-== Implement and Monitor an Azure Infrastructure
+== Intro
 
-XXX
+.48 heures requises après la création d'une nouvelle subscription pour pouvoir utiliser les budgets
+[NOTE]
+====
+J'ai créé une subscription "Pay-As-You-Go" pour ma préparation, et ai tout de suite essayé de mettre en place un budget pour suivre les dépenses associées. +
+Il est à noter que les fonctionnalités de gestion des coûts et budget ne sont PAS disponibles tout de suite après la création d'une subscription. +
+D'après la doc de Microsoft, il faut attendre jusqu'à 48 heures pour cela : https://docs.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets
+
+-> Confirmé : j'ai pu créé un budget 24 heures après création de la subscription
+====
+
+=== Divers informations
+
+* VM D2 v3 avec 2 vCPU et 8 Go RAM : 0.0.37$ / hour ou 26.88$ / mois pour une réservation Linux de 3 ans
+* "Service Fabric" means microservices
+
+== Section 1: Quick start
+
+== Section 2: Overview of Azure 
+
+=== Cloud concepts: Availability and Scaling
+
+* Cheaper per server: It's cheaper for Microsoft to run a server than you can ever achieve yourself
+    ** Hardware - large buyers can get 30% off the cost of the hardware
+    ** Electricity - 15% 20% of the cost of running a server
+
+* Availability:
+    ** 90% availability: 2.4 hours per day' of downtime
+    ** 99% availability: 14.4 minutes per day of downtime
+    ** 99.9% (3 nines) availability: 1.45 minutes per day of downtime
+    ** 99.99% (4 nines) availability: 8.6 secondes per day of downtime
+    ** 100%: generally said to be NOT possible
+
+=== Cloud concepts: Elasticity, Faults and Recovery
+
+* *Elasticity*: The ability of a system to automatically grow and shrink based on a application demand
+    ** image at 0.53
+    ** on voit sur cette image que les augmentations ne sont par "à-coups", qui correspondent aux ajouts de serveurs
+
+== Section 3: Analyse Resource Utilization and Consumption
+
+== Section 4: Implement VMs for Windows and Linux
+
+TIP: Aller sur https://azure.microsoft.com/ pour toutes les ressources concernant Azure (Azure services, documentation, pricing, etc.)
+
+* Actuellement, de l'ordre de ~1min30 pour créer (et démarrer) une VM
+
+* *Unmanaged disks*: it just charges you for the gigabytes used. +
+It can give you a 5 Po bucket that you can fili, and you just pay for the Go used.
+* *Managed disks*: you pay for whatever you choose, nevermind whether you use it or not.
+
+* *Disks are now encrypted by default*.
+    ** So if you want to make a copy of the VHD encrypted file, we will need the key (stored apart from the data) to be able to read the data.
+
+* Using some additional disks, that we can *detach* and *reattach* to some other VM, can be a good way to share data between VMs.
+
+* On ne peut pas placer une VM dans un Availability Set *après* sa création, il faut le faire à ce moment.
+
+* You need a *load balancer* to distribute equally the traffic between VMs running in different Availability Zones.
+
+* A *Virtual machine scale set* (or scaleset) does not cost anything on top of the cost of the virtual machines. +
+It's technically free, although you do have to pay for the VMs.
+    ** *Reminder*: With all VMs configured the same, virtual machine scale sets are designed to support *true autoscale*.
+
+* In *Linux*, disk are not encrypted with BitLocker, but with *D Encrypt*.
+* For *instanciation* purpose *Linux* uses *"cloud-init"* instead of Powershell scripts
+
+==== Quizz
+I
+* Question 1: +
+You have a set of virtual machines that are hosting mission-critical applications. You have to ensure the experience of virtual machines experiences as little downtime as possible. +
+Which of the following can you use to maintain application performance across an identical set of Virtual Machines?
+
+    ** Scale sets : *GOOD ONE !*
+        *** If you have an identical set of virtual machines, you can use Virtual Machine scale sets and scaling conditions to maintain application performance.
+    ** Availability sets
+    ** Availability zones
+    ** Azure Functions
+
+* Question 2: +
+You are planning the move of some app to Azure. You create a network security group (NSG). You need to recommend a solution to provide users with access to the app. What should you recommend?
+
+    ** Create an outgoing security rule for port 443 from the Internet. Associate the Network Security Group to all the subnets
+    ** Create an incoming security rule for port 443 from the Internet. Associate the Network Security Group to all the subnets
+    ** Create an incoming security rule for port 443 from the Internet. Associate the Network Security Group to the subnet that contains the web servers : *GOOD ONE !*
+        *** If you have a Network Security group, change the Incoming rules to allow port 443. This is so that users from the Internet can access the web server on the secure port 443.
+    ** Create an outgoing security rule for port 443 from the Internet. Associate the Network Security Group to the subnet that contains the web servers
+
+* Question 3: +
+You have a set of virtual machines that are hosting mission-critical applications. You have to ensure the experience of virtual machines as little downtime as possible. +
+Which of the following can you use to maintain application availability when an Azure datacenter fails?
+
+    ** Scale sets
+    **Availability sets
+    ** Availability zones : *GOOD ONE !*
+        *** You can use Availability zones to help protect against datacenter level failures.
+    ** Azure Functions
+
+* Question 4:
+The following requirements need to be met for the Virtual Machine. +
+The underlying data disks for the Virtual Machine need to be encrypted. +
+The company does not want to store the encryption keys locally. +
+Which of the following would be used for the management of the encryption keys?
+
+    ** Azure CosmoSDB
+    ** Azure Storage Account
+    ** Azure Key Vault : *GOOD ONE !*
+        *** You should use the Azure key vault service for managing the encryption keys.
+    ** Azure AD
+
+== Section 5: Powershell Azure AZ module
+
+* End of 2018, Microsoft deprecated the *old version* of Azure PowerShell that was based on *AzureRM* module. +
+Now as of 2019 and beyond, the new standard is based on *Az* module.
+
+[NOTE]
+====
+To know your PowerShell version, use the PowerShell command `$PSVersionTable.PSVersion`.
+
+    * 5.1.x versions are old ones, based on AzureRM
+    * 6.2.x are the new ones, based on Az
+
+To get all versions installed of your Az or AzureRM modules, you can use `Get-InstalledModule -Name <Az or AzureRM> -AllVersions | select Name, Version`
+====
+
+It's good to know that both exist *PowerShell* and *Azure extensions for PowerShell*
+
+* To force an *update* of your Az module to the last one, you can use the command: `Install-Module -Name Az -AllowClobber -Scope CurrentUser
+-Force`. +
+BUT, there is a "trick”... In fact, you can't *UPDATE* an Az module, that's mandatorily (at least now, 2021/06) a new version that is installed next to the previous one. +
+Meaning that, after running the previous command, if displaying all versions installed, you will get Az 2.3.2 AND AZ 2.5.0 (by example)
+* It's NOT an issue to have 2 versions of Az modules on your system, as the import module command will *only use the most recent one*.
+
+* Avant de pouvoir faire quoi que ce soit avec *Azure dans PowerShell*, il faut commencer par *se connecter* (log in), avec la commande `Connect-AzAccount` +
+La commande retournera un code qu'il faudra rentrer sur le site https://microsoft.com/devicelogin pour pouvoir s'authentifier.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 == Ressources
 
 D'autres sites permettant de préparer la certification :
 
     * Le cours Udemy de Scott Duffy (payant) : https://www.udemy.com/course/70534-azure
+    * Ce site d'un personne ayant réussi l'examen et donnant quelques conseils et ressources : https://www.programmingwithwolfgang.com/how-to-pass-az-303-and-az-304-certification-exams/
 
-Sites d'examens blancs (mock exams), questions / réponses pour s'entraîner : 
+    * Learning paths on MS Learn : https://docs.microsoft.com/en-us/learn/certifications/exams/az-303#two-ways-to-prepare
+    * MS Learn : https://docs.microsoft.com/en-us/learn/browse/?roles=administrator&products=azure
+    * Azure Code Samples : https://azure.microsoft.com/en-us/resources/samples/?sort=0
+    * Official Azure Documentation : https://docs.microsoft.com/en-us/azure/
+    * Official Microsoft Azure YouTube Channel : https://www.youtube.com/user/windowsazure
 
-    * xxx
+Sites de *labs* et *workshops* pour pratiquer : 
+
+    * Azure Citadel - Labs and Workshops : https://azurecitadel.com/
+    * Microsoft Cloud Workshop - More labs and workshops : https://microsoftcloudworkshop.com/
+    * Github AZ-303 from Microsoft Training : https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies
+
+Sites d'examens blancs (*mock exams*), questions / réponses pour s'entraîner : 
+
+    * ExamTopics AZ-303 : https://www.examtopics.com/exams/microsoft/az-303/
 
 == Mock exams
 

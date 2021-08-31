@@ -963,7 +963,20 @@ NOTE: It is sometimes seen that Azure Front Door forwards traffic to Traffic Man
 
 === Azure Bastion
 
-TO BE COMPLETED
+When you have a Virtual Machine and you need to *connect* to it for any maintenance task, you have to *open up a port* such as *RDP* for Windows, or *SSH* for Linux. +
+-> Those port openings are known as *security risks*.
+
+* You can use the Azure Portal and Azure Bastion to connect to your VM, without RDP, without opening a port. +
+It is the "modern way" to get remotely into a machine without having RDP ports opened at all.
+
+* *Azure Bastion* is a device installed on your *Virtual Network*
+* It has its *own subnet* that must be called "AzureBastionSubnet"
+* In fact, RDP is used, BUT only between Bastion and your server.
+
+=== Hands-on labs: High Availability
+
+* https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies/blob/master/Instructions/Labs/Module_05_Lab.md[Microsoft Learning - Lab 05 - Implementing Highly Available Azure IaaS Compute Architecture]
+    ** TO BE COMPLETED
 
 == Ressources
 

@@ -1,0 +1,1857 @@
+= Microsoft Azure Architect Technologies AZ-303
+Thomas SCHWENDER <https://github.com/ardemius[@ardemius]>
+// Handling GitHub admonition blocks icons
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+:imagesdir: ./images
+:source-highlighter: highlightjs
+// Next 2 ones are to handle line breaks in some particular elements (list, footnotes, etc.)
+:lb: pass:[<br> +]
+:sb: pass:[<br>]
+// check https://github.com/Ardemius/personal-wiki/wiki/AsciiDoctor-tips for tips on table of content in GitHub
+:toc: macro
+:toclevels: 4
+// To number the sections of the table of contents
+:sectnums:
+// To turn off figure caption labels and numbers
+:figure-caption!:
+// Same for examples
+//:example-caption!:
+// To turn off ALL captions
+// :caption:
+
+toc::[]
+
+== Examen et ressources de préparation
+
+Microsoft AZ-303 examen : https://docs.microsoft.com/fr-fr/learn/certifications/exams/az-303
+
+[IMPORTANT] 
+====
+Exam updated on 2025/05/25 ! +
+The differences with the previous plan can found here: https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RE4psD6
+====
+
+Exam plan : 
+
+    1. Implement and Monitor an Azure Infrastructure (50-55%)
+    2. Implement Management and Security Solutions (25-30%)
+    3. Implement Solutions for Apps (10-15%)
+    4. Implement and Manage Data Platforms (10-15%)
+
+Déroulement de la certification :
+
+    * 40 à 60 questions sur 1 heure
+    * score minimum de 700 / 1000
+
+NOTE: Pour plus d'informations sur la certification AZ-303, voir la description faite par testprep training : https://www.testpreptraining.com/tutorial/exam-az-303-microsoft-azure-architect-technologies/
+
+[NOTE]
+====
+Pour constater plus en détails la différence entre les ressources de cours Microsoft Learn et les autres disponibles (MOOC, sites, etc.), je me suis principalement servi du cours de *Scott Duffy* sur *Udemy* (https://www.udemy.com/course/70534-azure) pour me préparer.
+
+Pour rappel, pour l'AZ-900 sur les fondamentaux d'Azure, je m'étais principalement (mais pas que ) servi de Microsoft Learn.
+
+Comme d'habitude, une partie des autres ressources dont je me suis servi est disponible dans la section link:#_ressources[Ressources]
+====
+
+.Un conseil, évitez les formations avec un "vrai" formateur sur ce cours
+[TIP]
+====
+J'ai eu l'occasion de suivre une formation sur l'AZ-303 par un formateur Microsoft (sur 5 jours). +
+Mon avis est que *le contenu de cette certification ne s'y prête pas*. +
+Le contenu est dense, de très nombreuses notions sont passées en revue par le formateur, *à son rythme* (il a 5 jours et doit s'y tenir), sans la possibilité de s'arrêter sur un point que l'on creusera à son rythme (avec ~45 personnes dans le cours, même si le formateur demande régulièrement s'il y a des questions, les arrêts sont forcément courts).
+
+L'AZ-303 a pour vocation de vous présenter les "briques" technologiques que l'architecte va devoir connaître. +
+Ces briques sont nombreuses, et leur revue méritent que l'on y consacre du temps, temps qui va différer en fonction de l'expérience et des connaissances des uns des autres. +
+A mes yeux, le mieux est de progresser à son rythme, en s'appuyant sur un support de type livre ou MOOC, où l'on pourra revenir à loisir sur une notion en fonction de son apprentissage et sa pratique. +
+
+Car l'essentiel est là, *il faut pratiquer* pour que ça rentre 😉 +
+Faites une 1ere passe sur toutes les notions à voir (cela va déjà prendre un certain temps), puis pratiquez via des labs, et durant ces derniers creuser les notions abordées en reprenant la doc Microsoft.
+
+
+https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies
+
+====
+
+== Intro
+
+.48 heures requises après la création d'une nouvelle subscription pour pouvoir utiliser les budgets
+[NOTE]
+====
+J'ai créé une subscription "Pay-As-You-Go" pour ma préparation, et ai tout de suite essayé de mettre en place un budget pour suivre les dépenses associées. +
+Il est à noter que les fonctionnalités de gestion des coûts et budget ne sont PAS disponibles tout de suite après la création d'une subscription. +
+D'après la doc de Microsoft, il faut attendre jusqu'à 48 heures pour cela : https://docs.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets
+
+-> Confirmé : j'ai pu créé un budget 24 heures après création de la subscription
+====
+
+=== Divers informations
+
+* VM D2 v3 avec 2 vCPU et 8 Go RAM : 0.0.37$ / hour ou 26.88$ / mois pour une réservation Linux de 3 ans
+* "Service Fabric" means microservices
+
+== Section 1: Quick start
+
+== Section 2: Overview of Azure 
+
+=== Cloud concepts: Availability and Scaling
+
+* Cheaper per server: It's cheaper for Microsoft to run a server than you can ever achieve yourself
+    ** Hardware - large buyers can get 30% off the cost of the hardware
+    ** Electricity - 15% 20% of the cost of running a server
+
+* Availability:
+    ** 90% availability: 2.4 hours per day' of downtime
+    ** 99% availability: 14.4 minutes per day of downtime
+    ** 99.9% (3 nines) availability: 1.45 minutes per day of downtime
+    ** 99.99% (4 nines) availability: 8.6 secondes per day of downtime
+    ** 100%: generally said to be NOT possible
+
+=== Cloud concepts: Elasticity, Faults and Recovery
+
+* *Elasticity*: The ability of a system to automatically grow and shrink based on a application demand
+    ** image:azure-az303_08.png[]
+    ** on voit sur cette image que les augmentations sont par "à-coups", qui correspondent aux ajouts de serveurs
+
+== Section 3: Analyse Resource Utilization and Consumption
+
+== Section 4: Implement VMs for Windows and Linux
+
+TIP: Aller sur https://azure.microsoft.com/ pour toutes les ressources concernant Azure (Azure services, documentation, pricing, etc.)
+
+* Actuellement, de l'ordre de ~1min30 pour créer (et démarrer) une VM
+
+* *Unmanaged disks*: it just charges you for the gigabytes used. +
+It can give you a 5 Po bucket that you can fili, and you just pay for the Go used.
+* *Managed disks*: you pay for whatever you choose, nevermind whether you use it or not.
+
+* *Disks are now encrypted by default*.
+    ** So if you want to make a copy of the VHD encrypted file, we will need the key (stored apart from the data) to be able to read the data.
+
+* Using some additional disks, that we can *detach* and *reattach* to some other VM, can be a good way to share data between VMs.
+
+* On ne peut pas placer une VM dans un Availability Set *après* sa création, il faut le faire à ce moment.
+
+* You need a *load balancer* to distribute equally the traffic between VMs running in different Availability Zones.
+
+* A *Virtual machine scale set* (or scaleset) does not cost anything on top of the cost of the virtual machines. +
+It's technically free, although you do have to pay for the VMs.
+    ** *Reminder*: With all VMs configured the same, virtual machine scale sets are designed to support *true autoscale*.
+
+* In *Linux*, disk are not encrypted with BitLocker, but with *D Encrypt*.
+* For *instanciation* purpose *Linux* uses *"cloud-init"* instead of Powershell scripts
+
+=== Quizz
+
+* Question 1: +
+You have a set of virtual machines that are hosting mission-critical applications. You have to ensure the experience of virtual machines experiences as little downtime as possible. +
+Which of the following can you use to maintain application performance across an identical set of Virtual Machines?
+
+    ** Scale sets : *GOOD ONE !*
+        *** If you have an identical set of virtual machines, you can use Virtual Machine scale sets and scaling conditions to maintain application performance.
+    ** Availability sets
+    ** Availability zones
+    ** Azure Functions
+
+* Question 2: +
+You are planning the move of some app to Azure. You create a network security group (NSG). You need to recommend a solution to provide users with access to the app. What should you recommend?
+
+    ** Create an outgoing security rule for port 443 from the Internet. Associate the Network Security Group to all the subnets
+    ** Create an incoming security rule for port 443 from the Internet. Associate the Network Security Group to all the subnets
+    ** Create an incoming security rule for port 443 from the Internet. Associate the Network Security Group to the subnet that contains the web servers : *GOOD ONE !*
+        *** If you have a Network Security group, change the Incoming rules to allow port 443. This is so that users from the Internet can access the web server on the secure port 443.
+    ** Create an outgoing security rule for port 443 from the Internet. Associate the Network Security Group to the subnet that contains the web servers
+
+* Question 3: +
+You have a set of virtual machines that are hosting mission-critical applications. You have to ensure the experience of virtual machines as little downtime as possible. +
+Which of the following can you use to maintain application availability when an Azure datacenter fails?
+
+    ** Scale sets
+    ** Availability sets
+    ** Availability zones : *GOOD ONE !*
+        *** You can use Availability zones to help protect against datacenter level failures.
+    ** Azure Functions
+
+* Question 4:
+The following requirements need to be met for the Virtual Machine. +
+The underlying data disks for the Virtual Machine need to be encrypted. +
+The company does not want to store the encryption keys locally. +
+Which of the following would be used for the management of the encryption keys?
+
+    ** Azure CosmoSDB
+    ** Azure Storage Account
+    ** Azure Key Vault : *GOOD ONE !*
+        *** You should use the Azure key vault service for managing the encryption keys.
+    ** Azure AD
+
+== Section 5: Powershell Azure AZ module
+
+* End of 2018, Microsoft deprecated the *old version* of Azure PowerShell that was based on *AzureRM* module. +
+Now as of 2019 and beyond, the new standard is based on *Az* module.
+
+[NOTE]
+====
+To know your PowerShell version, use the PowerShell command `$PSVersionTable.PSVersion`.
+
+    * 5.1.x versions are old ones, based on AzureRM
+    * 6.2.x are the new ones, based on Az
+
+To get all versions installed of your Az or AzureRM modules, you can use `Get-InstalledModule -Name <Az or AzureRM> -AllVersions | select Name, Version`
+====
+
+It's good to know that both exist *PowerShell* and *Azure extensions for PowerShell*
+
+* To force an *update* of your Az module to the last one, you can use the command: `Install-Module -Name Az -AllowClobber -Scope CurrentUser
+-Force`. +
+BUT, there is a "trick”... In fact, you can't *UPDATE* an Az module, that's mandatorily (at least now, 2021/06) a new version that is installed next to the previous one. +
+Meaning that, after running the previous command, if displaying all versions installed, you will get Az 2.3.2 AND AZ 2.5.0 (by example)
+* It's NOT an issue to have 2 versions of Az modules on your system, as the import module command will *only use the most recent one*.
+
+* Avant de pouvoir faire quoi que ce soit avec *Azure dans PowerShell*, il faut commencer par *se connecter* (log in), avec la commande `Connect-AzAccount` +
+La commande retournera un code qu'il faudra rentrer sur le site https://microsoft.com/devicelogin pour pouvoir s'authentifier.
+
+* If you have multiple Azure subscriptions and want to switch from one to another, you can use the following commands:
++
+[source, PowerShell]
+----
+# Get your subscriptions
+PS C:\Users\toto> Get-AzSubscription
+
+<gives you your subscriptions with their Name, Id, TenantId, State, etc.>
+
+# We need a context variable
+PS C:\Users\toto> $context = Get-AzSubscription -SubscriptionId <Id from above command>
+PS C:\Users\toto> Set-AzContext $context
+----
+
+* To create a VM through PowerShell (new one, based on Az module) :
++
+[source, PowerShell]
+----
+# First we need to create a resource group
+PS C:\Users\toto> New-AzResourceGroup -Name someRgName -Location EastUS
+
+# Then we crete the VM
+PS C:\Users\toto> New-AZVM -ResourceGroupName "someRgName" -Name "someNewVMName" -Location "EastUS" -VirtualNetworkName "someVNetName" -SubnetName "default" -SecurityGroupName "newSG" -PublicIpAddressName "myipaddr" -OpenPorts 80,443, 3389
+# Reminder: port 3389 is default RDP port
+
+# here we have to fill the user ID and password (those last will be used for RDP)
+----
+
+Just for information, contrary to creating a VM through the Azure Portal (with some mandatory characteristics), if, with the *PowerShell* command line", we do not set some *VM characteristics*, *default ones* will be used. +
+Example: In the former example, we didn't set instance type for the VM, so a "DS1 v2" was used by default.
+
+* To stop and start the WM through PowerShell : 
++
+[source, PowerShell]
+----
+# To stop the VM
+PS C:\Users\toto> Stop-AzVM -ResourceGroupName "someRgName" -Name "someNewVMName"
+
+# To start the VM
+PS C:\Users\toto> Start-AzVM -ResourceGroupName "someRgName" -Name "someNewVMName"
+----
+
+image::azure-az303_01.png[]
+
+== Section 6: Automate deployment and configuration of resources
+
+=== Configuration and deployment with ARM Template
+
+* *ARM Template* is composed of 2 files : *template.json* and *parameters.json*
+* Des exemples de templates ARM peuvent être trouvés dans ce repo GitHub : https://github.com/Azure/azure-quickstart-templates
+
+Un template ARM est composé de plusieurs properties (6 types de properties) : 
+
+    * *schema*
+    * *contentVersion*
+    * *parameters* : what is required as inputs for the template. Every one of those parameters must have a *corresponding value within the parameters.json*
+        ** Example :
++
+[source,json]
+----
+"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParementers.json#",
+"contentVersion": "1.0.0.0",
+"parameters": {
+    "location": {
+        "type": "string"
+    },
+    ...
+}
+----
+    * *variables* : variables are basically computed values
+        ** Example : 
++
+[source,json]
+----
+"variables": { 
+    "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
+},
+...
+----
+    * *resources* : each entry in bracket represents 1 resource being deployed in Azure.
+        ** create a VM implies the creation of several other objects / resources like a network interface, a network security group, etc.
+    * *outputs* : you use outputs when you need to return values from the deployed resources.
+
+* You can redeploy the same ARM template several times without harming the existing environment. +
+Each time Azure sees that the resource already exists, it will just skip it. +
+This behavior is known as *DSC*, *Desired State Configuration*, and allows to ensure that your production environment hasn't changed since you deployed it.
+    ** This allows to avoid what is called *configuration drift* in IT: from time to time, people goes in PROD and tweak some settings, opens a port, etc. +
+    In this way, over time, the deployment that is in production doesn't match that script that was used to deploy. +
+    You can use this technique to redeploy ARM template repeatedly to ensure that your environment doesn't change from when you deployed it.
+
+=== Automation with PowerShell
+
+* Again, some examples of PowerShell deployment scripts exist in GitHub: https://github.com/Azure/azure-docs-powershell-samples
+* As a reminder, you can manipulate the Azure APIs with PowerShell and Azure CLI
+
+NOTE: For the *AZ-303 exam*, the "common way" to automate deployment is to use *ARM templates*, and not PowerShell or CLI scripts. +
+BUT, that's still a goode thing to know for your own needs.
+
+Here is an example of PowerShell script to deployment a VM in Azure:
+
+.https://github.com/Azure/azure-docs-powershell-samples/blob/master/virtual-machine/create-vm-iis/create-windows-vm-iis.ps1
+[source,PowerShell]
+----
+# Variables for common values
+$resourceGroup = "myResourceGroup"
+$location = "westeurope"
+$vmName = "myVM"
+
+# Create user object
+$cred = Get-Credential -Message "Enter a username and password for the virtual machine."
+
+# Create a resource group
+New-AzResourceGroup -Name $resourceGroup -Location $location
+
+# Create a virtual machine
+New-AzVM `
+  -ResourceGroupName $resourceGroup `
+  -Name $vmName `
+  -Location $location `
+  -ImageName "Win2016Datacenter" `
+  -VirtualNetworkName "myVnet" `
+  -SubnetName "mySubnet" `
+  -SecurityGroupName "myNetworkSecurityGroup" `
+  -PublicIpAddressName "myPublicIp" `
+  -Credential $cred `
+  -OpenPorts 80
+
+# Install IIS
+$PublicSettings = '{"commandToExecute":"powershell Add-WindowsFeature Web-Server"}'
+
+Set-AzVMExtension -ExtensionName "IIS" -ResourceGroupName $resourceGroup -VMName $vmName `
+  -Publisher "Microsoft.Compute" -ExtensionType "CustomScriptExtension" -TypeHandlerVersion 1.4 `
+  -SettingString $PublicSettings -Location $location
+----
+
+=== Azure automation service
+
+* Search for *"Automation Accounts"* in Azure Portal
+* Automation account is required to run jobs in Azure that are based on PowerShell and other scripting
+    ** With it, you can schedule a job to run every hour by example.
+
+* A *Runbook* is an *automated script* that you can run in your automation account.
+
+To practice, you can go along those 2 labs from Microsoft Learning on GitHub : 
+
+    * https://github.com/MicrosoftLearning/AZ-301-MicrosoftAzureArchitectDesign/blob/master/Instructions/AZ-301T02_Lab_Mod03_Deploying%20Configuration%20Management%20solutions%20to%20Azure.md[Microsoft Learning - Monitoring and automating Azure solutions - Lab Answer Key: Deploying Configuration Management solutions to Azure]
+        ** DONE
+    * https://github.com/MicrosoftLearning/AZ-301-MicrosoftAzureArchitectDesign/blob/master/Instructions/AZ-301T03_Lab_Mod01_Getting%20Started%20with%20Azure%20Resource%20Manager%20Templates.md[Microsoft Learning - Deploying Resources with Azure Resource Manager - Lab Answer Key: Getting Started with Azure Resource Manager Templates and Azure Building Blocks]
+
+=== Azure Bicep
+
+* *Azure Bicep* was designed to be a simpler syntax than the JSON behing ARM templates.
+* Bicep is just an *abstraction to ARM*
+    ** Bicep *compiles into ARM JSON*, so it is still going through the ARM deployment model.
+    ** So it transpiles, it is an intermediate language (IL)
+* and it is more like a language
+
+Pour plus d'infos voir https://github.com/Azure/bicep
+
+== Section 7: Implement storage accounts
+
+When creating a new storage account : 
+
+    * *Basics* configuration : 
+        ** you can choose between *Standard* and *Premium* for performances : 
+            *** *Standard* is for magnetic disks.
+            *** *Premium is for SSD*, which is the Solid-State Disc, the flash disk for performance
+        ** *Account kind* : *StorageV2* will be used in 99% of the cases
+            *** StorageV1 is an old version that must only be used for compatibility reasons.
+        ** *Replication* : 
+            *** *LRS* : *Locally-redundant storage*. Maintain 3 copies of my files in the same datacenter
+            *** *ZRS* : *Zone-redundant storage*. Distributes data across multiple data centers in the same region 
+            *** *GRS* : *Geo-redundant storage*. Distributes 6 copies of your files across 2 data centers (3 in the primary region, and 3 in the secondary one).
+            *** *RA-GRS* : *Read Access geo-redundant storage*. Gives you a 2nd URL that can be used to read your files, so that you can split the writing to the principal location, and the reading to the 2nd one. This is a performance *hack for frequently accessed files*.
+        ** *Access tier* : 
+            *** *Hot* : default choice. It means that you are going to be charge a certain amount for the storage, and a certain amount for accessing those files.
+            *** *Cool* : half the price for storage, BUT twice the price for access. +
+            This one is great for backup files, zip files, for historical files.
+
+    * *Advanced* configuration : 
+        ** *Blob soft delete* : enables you to save and recover your blob data up to X days after deletion. +
+        BUT, you are charge for those X days during which your files are still recoverable.
+        ** *Data lake storage Gen2* - *hierarchical namespace*: special type of storage account, called "Hadoop DFS namespace". +
+        Allows the collection of objects/files within an account to be *organized into a hierarchy of directories and nested subdirectories* in the same way that the file system on your computer is organized. +
+        With a hierarchical namespace enabled, a storage account becomes capable of providing the *scalability* and *cost-effectiveness* of *object storage*, with *file system semantics* that are familiar to analytics engines and frameworks.
+
+=== Access Keys and Share Access Signature
+
+* Through the *Acces keys* section of your storage account, you get 2 keys to access your account.
+    ** Key 1 is the principal, key 2 is the backup. +
+    The recommandation is NOT to use both at the same time. If one is compromised, then you can switch to the other one, and regenerate the first.
+
+* But access keys are NOT the recommended way of sharing access to a storage account, for programs or individuals. +
+To do so, the best way is to use a *Share Access Signature* (SAS) +
+A SAS is a *token that you can generate, signed by one of your keys*, that you can hand to someone. 
+    ** *Permissions* can be configured on this SAS to define *who can do what on what objects for how long*.
+
+=== Storage explorer
+
+4 types of data that the general purpose V2 storage can store : 
+
+    * *Containers* : blob storage
+    * *File Shares* : file system, which is a SMB (Server Message Block) file share, meaning we can mount it on Windows servers, Windows workstations or Linux.
++
+.Reminder: SMB protocol
+[NOTE]
+====
+The Server Message Block protocol is a network file sharing protocol that allows applications on a computer to read and write to files and to request services from server programs in a computer network. 
+====
+    * *Tables* : not really a SQLServer database, but allows tabular data storage with columns and rows.
+    * *Queues* : a messaging system that uses First In First Out (FIFO) metaphor
+
+* With feature *"Open in explorer"* of storage account "Overview", or from menu *"Storage explorer"* you are given a convenient way to interact with your data. +
+BUT the best way to do so is to use the *standalone tool "Azure Storage Explorer"* that you can install locally on your computer. 
+
+* When uploading blob : 
+    ** *blob type* : 
+        *** *block* blob : default choice, pretty good for most situations (99% of the cases)
+        *** *page* blob : optimized for when you need to update the file, but not the entire file. 
+            **** Good for Virtual Hard Disk (VHD) or some piece of data that is just updated partially
+        *** *append* blob : optimized for adding to a file, like a log file
+
+=== RBAC authentication for storage
+
+NOTE: *IAM* is Identity and Access Management
+
+A *RBAC* feature is available for Azure Storage Account through menu "Access control (IAM)".
+
+=== Access Tier
+
+*Access tier* defines how you are going to get charged for *storage* AND for *access*. +
+Choosing between *Cool*, *Hot* (default level of pricing for storage and access) or *Archive* is choosing the compromise you want between being charged for storage or access.
+
+* *Cool* tier is 50% cheaper that Hot tier for storage, but access cost is double.
+    ** You *can't put a file in Cool tier for less than 30 days*.
+* *Archive* tier is even cheaper to store files, and way more expensive to access them.
+    ** Archive tier can only be set at the blob level, and not on the account
+    ** This tier is designed for files that you almost never need, except in an emergency, like *backup files*.
+    ** Archive tier storage is 90% cheaper than Hot tier
+    ** For Archive tier, there is the concept of *rehydration* : +
+    See MS Archive access tier explanation : a blob in archive tier is offline data that can't be read, overwritten, or modified. +
+    To read or download it, you must first rehydrate it to an online tier. +
+    This rehydration can take time, depending of its priority (under 1 hour for high priority rehydration), which has a cost.
+
+* Cool and Archive *early deletion* : you have to pay if you delete data too early in those tiers (30 days for Cool and 180 for Archive) +
+This charge is prorated. 
+
+* *Premium* can also be considered as a tier, and *can only be chosen at creation*.
+    ** you can't switch from Hot to Premium after creation by example
+    ** You can't change from Premium to another tier afterwards
+    ** Premium is the *best tier in terms of performance* (at least 10x better in terms of latency)
+    ** Premium is about *8x more expensive than Hot tier for storage*, BUT for *data transfer*, Premium *only costs 1/3 of Hot price* (for Read and Write operations)
+        *** So, if you have really frequent reads, *you could save money on the Premium tier* compared to the Hot tier because *access cost is much lower*.
+    ** Premium gives you 99.99% SLA, even when running outside of an availability set
+
+=== Azure AD Access Control for Storage
+
+* Through menu *"Access Control (IAM)"* on your Storage account, you see the interface of *Azure Active Directory*. +
+It allows us to use RBAC to give permissions to items within our storage account.
+    ** This feature was added during 2020
+
+.Azure AD renamed in Microsoft Entra ID
+NOTE: Azure AD is being renamed to *Microsoft Entra ID* : https://devblogs.microsoft.com/identity/aad-rebrand/#:~:text=Azure%20AD%20is%20being%20renamed,Microsoft%20Entra%20Identity%20Developer%20Blog
+
+=== Hands-on labs: Azure Storage
+
+* https://github.com/MicrosoftLearning/AZ-104-MicrosoftAzureAdministrator/blob/master/Instructions/Labs/LAB_07-Manage_Azure_Storage.md[Microsoft Learning - Lab 07 - Manage Azure Storage]
+    ** DONE
+
+== Section 8: Implement virtual networking
+
+[TIP] 
+====
+For the *AZ-303 exam*, most of virtual network questions are about *Virtual Network to Virtual Network connections*, as well as *VNet Peering*. +
+Most of other virtual networking topics are NOT on the exam: no question on networks or subnets, or overlapping IP address ranges or anything like that.
+====
+
+* The IP address ranges in *Azure* generally follow *CIDR notation*
+    ** Voir la page wikipedia sur les sous-réseaux pour plus de détails sur la *notation CIDR (Classless Inter-Domain Routing)* : +
+    https://fr.wikipedia.org/wiki/Sous-r%C3%A9seau
+
+* Pour la création d'un VNet sur Azure, la *plage d'adresse IPv4 maximale* que l'on peut réserver est *10.0.0.0/8*, soit ~16 000 000 d'adresses. +
+C'est une *MAUVAISE idée* que de créer un VNet de cette taille, car on ne pourra plus en créer d'autres ! (on a pris absolument tout ce qui pouvait être disponible)
+* Une *plage d'adresse correcte* / conseillée pour un VNet est par exemple *10.0.0.0/24*, soit 256 adresses.
+* A Virtual Network is just a database entry. It is created nearly instantly and doesn't cost anything.
+
+* All Virtual networks require *at least 1 subnet*.
+* A *subnet* is a *subdivision* of that VNet IP address range
+
+=== VNet to VNet connections: Virtual Network Gateway
+
+* By default, there is no VNet to VNet communication.
+
+* 1st way to connect 2 Virtual Networks in Azure: using a *Network Gateway* +
+A network gateway is : 
+    ** like a *site to site VPN*
+    ** a virtual device that is going to encrypt the traffic. +
+    So any traffic traveling between the 2 VNets will be *encrypted* through a tunnel. +
+    That's the same Virtual Network Gateway that you would use if you were connecting your on premises to Azure using a VPN or a point to site VPN.
+    ** it takes around *45 min to create* a Virtual Network Gateway
+
+* A VNet Gateway is *charged by hour* (0.19$ / hour), with : 
+    ** *free inbound* inter-virtual network data transfers (data going into Azure data centers between 2 virtual networks)
+    ** *chargeable outbound* inter-virtual network data transfers (data going out of Azure data centers between 2 virtual networks)
+
+=== VNet to VNet connections: Peering
+
+* "Peerings" is available in the "settings" menu of VNets
+
+* Like traffic between virtual machines in the same network, traffic is routed through Microsoft's *private network* only.
+* Network traffic between peered virtual networks is private. Traffic between the virtual network is kept on Microsoft backbone network. +
+*No public internet, gateways, or encryption* is required in the communication between the virtual networks.
+
+* Contrary to VNet gateway, I am *charged in all the cases* for data transfer: 
+    ** for outbound data connection from one network
+    ** and inbound data connection to another network
+
+* It's a kind of expensive connection if you are transferring a lot of data between your VNets.
+    ** So, there is no device involved, you don't pay for the peering to be available, BUT you pay for all data transfers.
+
+=== Quizz
+
+* Question 1: +
+A company currently has an on-premise datacenter. The data center has 2 VPN devices. They have also set up a Virtual Network in Azure. The Company has the following requirements: +
+- They need to set up a site-to-site VPN connection. +
+- Then ensure the Site-to-Site VPN connection failure will not cause an interruption of more than 2 minutes. +
+Based on the above requirements what is the minimum number of Virtual network gateways that would be required to be set up in Azure?
+    ** 1 : *GOOD ONE !*
+        *** Every Azure VPN gateway consists of two instances in an active-standby configuration. For any planned maintenance or unplanned disruption that happens to the active instance, the standby instance would take over (failover) automatically, and resume the S2S VPN or VNet-to-VNet connections.
+
+* A company has 2 virtual networks as shown below: +
+- Vnet1: 10.1.0.0/16 +
+- Vnet2: 10.2.0.0/16 +
+To complete the peering connection, you go ahead and add a subnet to Vnet1. Would this ensure the peering connection is successful?
+    ** 1 : *GOOD ONE!*
+        *** You don't need to add a subnet. You just need to ensure that you add a peering connection from Vnet1.
+
+== Section 9: Implement Cloud infrastructure monitoring
+
+* You can start by enabling *Azure Security Center*, which can be seen as a centralized place for the security of both your Azure resources, and the non-Azure ones that you choose to include.
+    ** *Azure Defender* is included in Security Center
+        *** It proposes a free tiers and a paid tier (defender tiers)
+            **** free tiers gives you a secure score, and security recommandations
+            **** paid tiers (defender tiers) also gives you threat protection for Azure VMs and non-Azure servers
+                ***** Azure Defender for App Service : 14.60$/App Service/month
+                ***** Azure Defender for Servers : 14.60$/Server/month
+        *** It can manage not only your Azure workloads, but your on premise ones as well
+
+* *Azure Advisor*, between other things, also makes security recommendations
+    ** It alerts you about security issues with your account and your usage of Azure
+    ** it proposes some quick fix remediations to the issues found
+
+* The best way to *monitor performance* on Azure is to do it on a *resource by resource basis*.
+    ** Because Azure services have different characteristics
+    ** This monitoring can in the first place be done using the *logs* of the service
+    ** you can also turn on *diagnostics* for some components
+        *** turn on diagnostics requires having created a *log analytics workspace*
+        *** a log analytics workspace is a *storage repository for log data*.
+            **** That data stored at that place can then be used by *Azure Monitor*
+            **** Be careful *not to collect log data too frequently*, as it will impact performances
+
+* On an Azure VM, in the "monitoring" section, you find "*Diagnostic settings*", which regroup what is called *host level metrics*, like CPU, disk and network usage.
+    ** There, by enabling "*guest-level monitoring*", you will *install an agent* on the VM
+
+=== Quizz
+
+* Question 2: +
+A company has the following windows virtual machines deployed to their subscription in Azure: +
+- VM1 +
+- VM2 +
+The Monitoring department needs to collect certain performance-based counters from the virtual machines. Which of the following could help accomplish this?
+    ** enable base collection of metrics
+    ** enable collection of boot diagnostics
+    ** enable collection of performance diagnostics
+    ** enable collection of guest OS diagnostics data : *GOOD ONE!*
+        *** If you enable collection of guest OS diagnostics data, you will have the ability to collect data on the performance counters on Windows based virtual machines.
+
+== Section 10: Implement Azure Active Directory
+
+* In computing, *identity* is a representation of a person, application or device.
+* It usually requires a password, a secret key or a certificate to prove
+
+* Azure provides an identity management system based on their popular Active Directory : *Azure Active Directory* (AAD)
+
+* Be careful, Azure Active Directory is *NOT* the same as Active Directory, they do not provide the same services.
+    ** Traditional AD is based on LDAP protocol and Kerberos, and does not work Internet protocols.
+    ** Azure Active Directory uses Internet protocols (SAML, WS-Federation, OpenID)
+
+.Azure Active Directory model
+image::azure-az303_02.png[]
+
+* By default, Azure AD will assign you a *domain* on xxx.onmicrosoft.com
+
+IMPORTANT: Switching tenant implies switching Azure subscription +
+If you create a new AD tenant, it will have no Azure subscription to begin with, and will need one if you want to create resources against them.
+
+*Identity Protection*: 
+
+    * That's where we can *set up policies*, that will basically deny access to people identified as risky by Azure
+    * *User risk policy*: this risk is anything like:
+        ** user ID and password being found online
+        ** brute force attacks against a range of user IDs, resulting in a user having thousands of login attempts
+        ** there is also threat intelligence, which is a machine learning model that Azure can apply to understand ifa user's behavior or activity is unusual (like connection at a strange time)
+    * *Sign-in risk policy*: this risk is the probability that the given signing attempt is NOT the identified owner
+        ** like using a anonymous VPN, or using the TOR network
+        ** logging in from a country you've never used before
+        ** if your IP address is known to be a bad IP address (hacker's IP address)
+        ** to be signed in in 2 locations at the same time, from different locations
+
+So, the *user risk* is the probability that the *account is compromised*, whereas the *sign-in risk* is the probability that the signing attempt is *not the person who he is supposed to be*.
+
+If some of those risks are detected the policy can be set up to either *block access*, or *allow it with constraints* (change password, enable MFA, etc.)
+
+NOTE: Azure doesn't give much details on the different risk levels (perhaps to avoid giving info to hackers) +
+So we can't easily say what's the difference between a low risk and medium risk by example.
+
+*Conditional Access*: 
+
+    * *Conditional Access* is a tool that Azure Active Directory uses to *allow (or deny) access to resources* based on identity *signals*. These signals include *who* the user is, *where* the user is, and *what device* the user is requesting access from.
+
+*Guest user*: a guest user is a user *external to your organization*
+
+    * This user is not part of your Active Directory, but they do need access to your applications
+    * They can be invited into your Active Directory tenant, in the custom domain that you created for it.
+        ** But they will not be part of your organization.
+
+=== Quizz
+
+* Question 1: +
+Your company has set up an Azure AD tenant with the domain name of softwarearchitect.onmicrosoft.com. The company has purchased the domain softwarearchitect.com from a domain registrar. They want to ensure now that they can define users in Azure AD with the suffix of @softwarearchitect.com. +
+Which of the following steps would you need to implement for this? Choose three answers from the options given below.
+    ** Add an Azure AD tenant and verify the domainin Azure AD
+    ** Verify the domain in Azure AD and add a record in the domain registrar
+    ** Add a custom domain name and verify the domain in Azure AD
+    ** Add a custom domain name, add a record in the domain registrar and verify the domain in Azure AD : *GOOD ONE!*
+        *** As a reminder, record to be added in the chosen domain registrar can be of type TXT or MX
+
+* Question 2: +
+A company has an Azure AD tenant named whizlabs.com. The company hires a consultant to perform some work. The consultant needs to authenticate to the tenant using a Microsoft account names john.doe@outlook.com Which of the following would you do to fulfill this requirement?
+    ** Create a new user using the PowerShell cmdlet New-AzureADUser. Specify the "-userPrincipalName" parameter for the command as john.doe@outlook.com
+    ** Add a custom domain in Azure and the add the user
+    ** In the Azure portal, add a guest user and specify john.doe@outlook.com as the email ID : *GOOD ONE!*
+        *** If you have an external user who is not part of your domain, you can create a new guest user in Azure AD
+    ** Create a new user in Azure AD as john.doe@softewarearchitect.com
+
+* Question 4: +
+A group has been created and all users have been added as part of the group. You create a conditional access policy that enforces the use of multi-factor authentication for the group for all cloud-based applications. +
+Would User1 with a Multi-factor authentication status of "Enforced" be required to use multi-factor authentication when signing into Azure via the web browser?
+    ** yes : *GOOD ONE!*
+        *** If the user state is in the Enforced state, then the user will need to use MFA for the login process
+    ** no
+
+== Section 11: Implement and manage hybrid identities
+
+* Azure Active Directory has the ability to *synchronize* with your on-premise Active Directory: this feature is called *Azure AD Connect*
+    ** Azure AD Connect needs to be downloaded and installed so as to be able to perform the synchronization
+    ** Azure can also allow *seamless single sign-on* between Azure and on-premise apps / services.
+    ** You can choose to synchronize only some groups of people with filters
+    ** You can also choose *Pass-through authentication* that makes *Azure AD only a middleman to the on-premise AD* that will always perform the real authentication.
+
+* *Azure AD Connect Health* allows you to be warned (alert, mail, etc.) in case of issues with the synchronization between yours Azure AD and on-premise AD (which could be a security hole)
+
+=== Quizz
+
+* Question 1: For user authentication, the company wants to enforce the use of their on-premise Active Directory security and password policies. The company decides to configure Azure AD Connect with Pass-through Authentication. +
+Would this fulfill the requirement?
+    ** yes: *GOOD ONE!*
+    ** no
+
+* Question 2: Your company has an Active Directory forest named softwarearchitect.com. The forest contains two child domains: staging.softwarearchitect.com and production.softwarearchitect.com. Your company has now set up an Azure AD tenant named softwarearchitect.com. All of the on-premises user accounts are now being synced onto Azure AD with the help of Azure AD Connect. The company has also implemented a seamless single sign-on.
+{lb}
+You now have to change the source of authority for all user accounts in the staging.softwarearchitect.com domain. You have to prevent the synchronization of the staging.softwarearchitect.com domain.
+{lb}
+You decide to use the Azure AD Connect wizard. +
+Would this fulfill the requirement?
+    ** yes: *GOOD ONE!*
+        *** For more information on *Azure AD Connect filtering*, please refer to https://docs.microsoft.com/en-us/azure/active-directory/hybrid/how-to-connect-sync-configure-filtering
+    ** no
+
+== Section 12: Manage workloads in Azure
+
+=== Azure Migrate
+
+* *Azure Migrate* is a hub for migration from on-premises datacenter to Azure
+    ** it does the assessments of your on-premises
+    ** it can also help you with the migration of physical machines, virtual machines, Virtual Desktop Instances (VDI), web apps and raw data (in the form of files)
+
+* *Azure Migrate* will create some *assessments* for your migration project. It will inform you about: 
+    ** The *Azure readiness*: number of VMs ready to be imported in Azure, ready with conditions, not ready, etc.
+    ** the *monthly compute cost estimate* for those VMs
+    ** the *monthly storage cost estimate* for those VMs
+
+=== Recovery Services vaults
+
+* Azure has backup and recovery services, called *Recovery Services vaults*
+    ** Region is important, you need to put the recovery services vault in the *same region* as your resources.
+    ** Recovery Services vault has 2 purposes : *backup* and *recovery* (sometimes called *replication*)
+        *** site recovery operation : to copy a machine from one location and put it to another location
+    ** Storage replication type (Geo-redundant (GRS), Locally-redundant (LRS)) cannot be changed once you start protecting items
+
+.Concept of Soft delete
+[WARNING]
+====
+Soft delete protects backup data from accidental deletes by retaining data for 14 days after delete operation.
+
+This implies that after a deletion, you will have to *pay for the backup still in your storage account* for those 14 days. +
+This is probably NOT what you want if you just want to test the feature. +
+So the advice is to disable soft delete for testing purposes.
+====
+
+* Some Azure services (like Azure SQL Database) have their own built-in backup mechanism, so you don't do a backup with Recovery Services vault for them.
+
+A *backup policy* defines : 
+
+    * a *backup frequency*
+    * if you want *instant restore* : When you backup, backed up VM disks are copied from storage, across the network to the recovery storage location. With instant restore, you can leverage *locally stored snapshots* taken during a backup job, without waiting for backup data to be transferred to the vault.
+        ** The snapshot retention value is configurable to any value between 1 to 5 days, with a default value of 2 days. +
+        image:azure-az303_03.png[]
+    * a *retention range*: the duration during which a backup is retained.
+        ** Example : Retain backup every day at 08:30 AM *for 30 days*. +
+        This implies that you are keeping 30 times the storage of your virtual machine.
+
+=== Update management
+
+Windows OS Update management is available in the Azure Portal, in the VM section. +
+This feature is different from the built-in on-premise Windows update manager, that it can replace.
+
+* Azure Update management requires to *enable Logs Analytics*, which itself requires an Automation account.
+
+=== Hands-on labs: Azure Site Recovery
+
+* https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies/blob/master/Instructions/Labs/Module_12_Lab.md[Lab: Protecting Hyper-V VMs by using Azure Site Recovery]
+    ** IN PROGRESS
+
+=== Quizz
+
+* Question 1: You need to perform an assessment of the Virtual Machines in the on-premise environment which can be migrated to Azure. +
+You decide to use the Azure Migrate tool. +
+Does this meet the requirement?
+    ** yes: *GOOD ONE*
+    ** no
+
+* Question 2: A company is preparing its Azure environment for the backup of Azure Virtual Machines. They need to ensure the following when it comes to the backup of Virtual Machines. +
+- The Virtual machines need to be backed up daily at 03:00 UTC. +
+- The backups should be retained for a period of 90 days. +
+Which of the following should you configure in the Azure Recovery Services vault?
+    ** Backup Policy: *GOOD ONE*
+    ** Backup Schedule
+    ** Backup Logs
+    ** Backuop Infrastructure
+
+** Question 3: You need to perform an assessment of the Virtual Machines in the on-premise environment which can be migrated to Azure. +
+You decide to create a replication policy. +
+Does this meet the requirement?
+    ** yes: *GOOD ONE*
+        *** You create the replication policy when you finally want to perform the replication of the Virtual Machines. It is not used in the assessment phase.
+    ** no
+
+** Question 4: You need to ensure that the virtual machines VM3 and VM4 are protected by Azure Recovery services. Which of the following would you need to do to achieve this?
+    ** Create a new recovery services policy
+    ** Create a new backup policy
+    ** Create a new subscription
+    ** Create a new Recovery Services Vault: *GOOD ONE*
+
+== Section 13: Implement load balancing and network security
+
+=== Load Balancer
+
+.load balancer example
+image::azure-az303_04.png[width=600]
+
+* The load balancer is a device whose goal is to distribute traffic between 2 or more servers.
+
+Differences between an Application Gateway and a Load Balancer : 
+
+    * *Application Gateway* is a running instance, like a mini Virtual Machine doing its work: take some time to be deployed
+    * A *Load Balancer* is just some settings in one of the internal database tables at Microsoft: it is created in seconds.
+
+There are 3 main characteristics for load balancers (and also application gateway) : 
+
+    * *Frontend*
+    * *Backend*: those are the servers that are handling the traffic
+    * *load balancing rules*: how does the traffic travel from the front end to the back end ?
+
+There is also *health probes*, which allow the load balancer to know that the backend pools are operating correctly, and will remove the servers that are not.
+
+NOTE: *Backend pools* : group of servers that are going to handle traffic as one. +
+It is indeed a collection of ressources that can contain VMs, scale sets, IP addresses or fully qualified domain names (FQDN)
+
+=== Application Gateway
+
+The Application Gateway is a different "kind" of load balancer from the "classic" one : 
+
+    * *"Classic" load balancers* are indeed *"level 4 load balancer"*, which means that it only understands things at a transport protocol level. +
+    It understands TCP, UDP (the 4th level of OSI model), it understands IP addresses and ports (3rd level of OSI model), BUT it doesn't understand URLs that represent the 7th level of OSI model.
+    * *Application Gateway* are at this 7th level and, as a consequence, are called *7th level load balancer*.
+
+image::azure-az303_17.jpg[width=600]
+
+With a *7th level load balancer*, you can set up *rules to handle differently URLs* : 
+
+    * `/images/*` URLs are oriented towards ImageServerPool
+    * whereas `/video/*` URLs are oriented towards VideoServerPool
+
+-> This can't be done with a classic 4th level load balancer
+
+Moreover, Application Gateway : 
+
+    * can be placed in specific Availability Zones
+    * can be clustered, can be scaled
+    * it is finally more an "enterprise grade" load balancer, it is more flexible when it comes to availability
+    * unlike load balancer, it IS a device, an instance, and so it needs to be placed in a Virtual Network
+
+.Connection draining
+[NOTE]
+====
+When adding a rule for an Application Gateway, you will also have to add a *HTTP setting*. +
+When doing so, *connection draining* is a feature that is going to wait until the server is idle before removing it from the pool. +
+It is a cool feature that allows, when wanted, a *slower process of scaling down* your number of servers in the backend pool.
+
+Example : when wanting to scale down from 10 to 5 servers in the pool, instead of simply cuting off 5 servers, which can have bad impacts on the user experience, you can leverage connection draining.
+====
+
+Reminder : like L4 load balancer, you need to define Frontends, Backends (backend pool) and rules for Application Gateway.
+
+=== Firewall
+
+* Firewall is a *network security device* that can *monitor both incoming and outgoing traffic* that's coming to a Virtual Network
+* It can either *allow or prevent data packets* based on a set of *security rules*
+
+IMPORTANT: a Firewall is different from a Network Security Group
+
+As a reminder, a *Network Security Group* is some kind of *access control list*, based on IP address, port, source, destination protocol. +
+It's a *very static list*, it doesn't examine the packets themselves, it only examines the source and destination. +
+By comparison, a Firewall is a more "intelligent" device.
+
+Advices and steps for the *creation of a firewall* : 
+
+    * the *firewall subnet* MUST be called *"AzureFirewallSubnet"*, and should be a *small range one*, like 10.2.0.0/26 by example (meaning 59 addresses)
+    * take note of the firewall private and public IP address
+    * we need to create a *Route table*, which contains the rules (here called "routes") specifying how packets should be routed in a virtual network. +
+    Route tables are associated to subnets, and each packet leaving a subnet is handled based on the associated route table.
+        ** This route table will have to be associated with a Virtual Network, and a subnet (the subnet dedicated to your VMs, and NOT the specific firewall subnet "AzureFirewallSubnet")
+{lb}
+    * we have to create a new rule to allow the traffic to go out of the VMs, because, as traffic now has to go through the firewall, it is blocked by default. +
+    This rule is called "*application rule*", because the L7 of the OSI model is the application layer, in which HTTP traffic travels
+        ** rule has to be given a priority, between 1 and 10 000, the smaller being the one with the higher priority
+    * you also need to create a "*network rule*" for the *DNS lookup* needed to find the target URL used in the previous application rule. +
+    Through this network rule, we are going to allow DNS traffic.
+        ** *DNS* doesn't travel over TCP but *over UDP*.
+    * we finally must *allow traffic to come inbound* in order for us to even access to the VM. +
+    By default, there is no inbound traffic allowed, and not even a public IP address for the VM. 
+        ** In our case, we are not going to add a public IP address for the VM, because we are going to use the public IP address of our firewall.
+        ** So we are going to *accept any public IP connection of RDP into the firewall*, and redirect it to the VM.
+        ** So the rule we are going to create is a *redirection of traffic*, hence its name : a *NAT rule*
+        ** RDP uses the TCP protocol.
+        ** For our NAT rule: 
+            *** *Source* : if you want to be secure, should be limited to your own IP address, but for the current example, we are going to accept any IP
+            *** *Destination address* : the firewall public IP address (the port for RDP is 3389)
+            *** *Translated address* : it's through translated address that we *direct traffic to our VM*, meaning you will have to set the *IP address assigned to the VM network interface card*.
+    * Last thing we have to do: *change the DNS settings of the Virtual Machine* to use the ones that we provided
+        ** We need to go to the network interface that was automatically created with our VM
+        ** and to change the DNS to use the one we created (instead of the default one)
+            *** for information, it exists public DNS servers that anyone can use (ex: 209.244.0.3 and 209.244.0.4)
+
+=== Azure Firewall Manager
+
+* Azure Firewall Manager is a *centralized management dashboard for your firewalls*. +
+Firewall manager is basically centralized management of policies across all your firewalls (definitively recommended in a large enterprise environment)
+
+
+* It supports 2 types of network architectures:
++
+.Azure Firewall Manager: 2 supported network architectures
+image:azure-az303_05.png[]
+
+    ** *Secured virtual hub*: +
+    An *Azure Virtual WAN Hub* is a *Microsoft managed* ressource that lets you easily create *hub and spoke architectures*. +
+    When security and routing policies are associated with such a hub, it is referred to as a "secured virtual hub".
+
+    ** *Hub virtual network*: +
+    This is a *standard Azure virtual network* that you *create and manage yourself*. +
+    When security and routing policies are associated with such a hub, it is referred to as a "hub virtual network". +
+    At this time (2021/08), only Azure Firewall Policy is supported. +
+    You can peer spoke virtual networks that contain your workload servers and services. +
+    You can also manage firewalls in standalone virtual networks that are not peered to any spoke.
+
+.Comparison between Secured virtual hub and Hub virtual network
+image:azure-az303_06.png[]
+
+* This kind of dashboard is more and more important, because as you grow your network, you've got plenty of networks. +
+So it becomes harder to *keep all of those up to date* with the latest *security policies*.
+    ** In fact, Azure Firewall Manager allows you to *manage your security footprint*
+
+* The *pricing* of Azure Firewall Manager policies is quite *steep*: 100$ per policy per region
+    ** this product focuses *large enterprises* for which some hundreds of dollars are not going to faze them too much.
+    ** There is a free level (but quite limited): a single rule associated with only a single firewall is free.
+
+==== Azure virtual WAN and "hub and spoke" architecture
+
+Details can be found on Microsoft docs : 
+
+    * https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about
+    * https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-global-transit-network-architecture
+
+* Azure Virtual WAN architecture is a *hub and spoke architecture* with scale and performance built in for branches (VPN/SD-WAN devices), users (Azure VPN/OpenVPN/IKEv2 clients), ExpressRoute circuits, and virtual networks. 
+* It is a Microsoft managed cloud networking service. All the networking components that this services is composed of are hosted and managed by Microsoft
+
+* It enables a *global transit network architecture*, which is based on a classic hub and spoke connectivity model where the *cloud hosted network "hub"* enables *transitive connectivity* between endpoints that may be distributed across different types of *"spokes"*. +
+By "transitive connectivity" we mean that any spoke that wants to speak to another *has to go through to the hub* in order to have that connection.
+
+* In this model, a *spoke* can be:
+
+    ** Virtual network (VNets)
+    ** Physical branch site
+    ** Remote user
+    ** Internet
+
+.Global transit network with Azure Virtual WAN (hub and spoke architecture)
+image:azure-az303_07.png[]
+
+=== Azure Front Door Service
+
+* Imagine you the *same Web app deployed in 2 different regions*. You do this in case a region suffer some outage, and so you have a backup already standing by. +
+But *how can you provide a fallback*, so that when one fails, the other takes over ?
+    ** You could get into Application gateways, and try to set this up as a backend pool. Even if they are in different regions, it's possible to do that. +
+    BUT, even doing so, the application gateway has to be in some region. And in case of a regional outage, the associated application gateway would be affected.
+    ** The solution for this is called *Azure Front Door*.
+
+* Azure *Front Door* is basically a *global level* of a *load balancer*, that also goes far beyond this lone feature. +
+It also provides: 
+    ** a firewall
+    ** a CDN
+    ** other services
+
+* Very much like a load balancer, it has *frontends*, *backend pools* and *routing rules*.
+    ** we have a lot more options in terms of backends to what we normally get with load balancer. +
+    We can even direct traffic to another application gateway.
+        *** An Azure Front Door could be the front door for an AWS machine or for hosted on-premises services.
+* You can *set up cache* for you Front Door service, which is hence at global level (kind of *CDN type feature*). +
+It's basically going to cache your images, Javascript, CSS and all your *static content* at global level.
+
+* There is also *dynamic compression* : it takes the files as they get sent from the server to the front door service, and use GZip compression to get it sent down to you (meaning less data, and so quicker)
+
+So if you want to be *highly available for a service*, you have to consider *using more regions* and therefore you have to consider something like *Front Door to be in front of this*.
+
+=== Azure Traffic Manager
+
+* *Azure Traffic Manager* is older than Azure Front Door (which is a quite recent technology), but shares a similar purpose : *to send traffic on a global scale to one region or another*.
+    ** BUT, traffic manager works at DNS level.
+
+Use case : 
+
+    * The end user ends up typing a domain name into his browser
+    * The browser goes and looks up the IP address for that domain name
+    * That's where Traffic Manager responds with 1 IP address or the other, depending on the region.
+        ** Default behavior being to send the IP address of the application closest to him geographically
+
+.Traffic Manager use case
+image::azure-az303_09.png[]
+
+* So, Traffic Manager is basically a *DNS "trick"* that will give 1 domain name, multiple IP addresses.
+
+* Traffic Manager also *handles failover*. +
+When 1 region goes down and stops responding to traffic, after some time (~10 or 15 min), the traffic will start flowing to the other region.
+    ** It is the *aspect of availability* that *some downtime is allowed*, but *excessive downtime is what you are trying to avoid*.
+
+NOTE: It is sometimes seen that Azure Front Door forwards traffic to Traffic Manager, so there is a place for this technology in your stack.
+
+=== Azure Bastion
+
+When you have a Virtual Machine and you need to *connect* to it for any maintenance task, you have to *open up a port* such as *RDP* for Windows, or *SSH* for Linux. +
+-> Those port openings are known as *security risks*.
+
+* You can use the Azure Portal and Azure Bastion to connect to your VM, without RDP, without opening a port. +
+It is the "modern way" to get remotely into a machine without having RDP ports opened at all.
+
+* *Azure Bastion* is a device installed on your *Virtual Network*
+* It has its *own subnet* that must be called "AzureBastionSubnet"
+* In fact, RDP is used, BUT only between Bastion and your server.
+
+=== Hands-on labs: High Availability
+
+* https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies/blob/master/Instructions/Labs/Module_05_Lab.md[Microsoft Learning - Lab 05 - Implementing Highly Available Azure IaaS Compute Architecture]
+    ** TO BE COMPLETED
+
+=== Quizz
+
+* Question 1 : A company has to deploy an application to Azure. The application consists of a web front end and an application tier. You have to implement a load balancing solution that has to comply with the following requirements.
+- From the Internet to Web Front End: +
+    Provides support for URL-based routing +
+    Provides support for connection draining +
+    Provides support for preventing SQL injection attacks
+- From the Web Front End to the application tier: +
+    Provides support for port forwarding +
+    Provides support for HTTPS  health probes +
+    Provides support for having an availability set as the backend pool +
+Which of the following is a Load Balancer solution you would recommend for the *Internet to Web Front End*?
+    ** An Azure Application Gateway that has Web Application Firewall enabled : *GOOD ONE*
+    ** An Internal Azure Standard Load Balancer
+    ** An Internal Azure Basic Load Balancer
+    ** A public Azure Standard Load Balancer
+
+* Question 3 : An organization has set up VMs to act as jump boxes in each of its 6 virtual networks. +
+Why should the organization consider using Azure Bastion?
+    ** The organization can simplify the management of its VMs : *GOOD ONE*
+        *** *Azure Bastion* is a fully managed PaaS service. It provides seamless RDP/SSH access ot VMs over the internet without requiring the installation of connection software like Remote Desktop.
+    ** The organization can eliminate all of its VM management work
+    ** the organization can eliminate the need to manage its virtual networks
+
+* Question 4 : You decide to deploy Azure Bastion to an existing virtual network by using the Azure CLI. +
+What resources do you need to create ?
+    ** VM, public IP, and Azure Bastion
+    ** Subnet named "AzureBastionSubnet" and at least one VM
+    ** Subnet named "AzureBastionSubnet", public IP, and Azure Bastion : *GOOD ONE*
+        *** Create a subnet named "AzureBastionSubnet" for the virtual network, create a public IP, and the create the Azure Basion resource with the virtual network and public IP address information.
+
+== Section 14: Implement and manage Azure governance solutions
+
+=== Introduction to governance
+
+See the section on Azure Resource Groups, Subscriptions, and Management Groups in my https://github.com/Ardemius/azure-az900-certification#azure-subscription[AZ-900 training notes].
+
+=== Role-Based Access Control (RBAC)
+
+Among all different types of roles are 3 basic ones : 
+
+    * *Reader* : read only permission, no modify permission at all, can't create resources
+    * *Contributor* : similar to reader BUT can make changes to resources and can create resources. +
+    Contributors can't create accounts, can't give permissions to anyone else, and can't make changes at the Azure AD level.
+    * *Owner* : similar to contributor, but owners can give permissions to others.
+
+It is possible to *create our custom roles* : 
+
+    * with the permissions we want
+    * with scopes we want (subscription level, resources groups)
+
+* Concerning *deny assignments*, you can't directly create them.
+    ** They are automatically created when assigning a blueprint to a subscription that overrides the permissions that some users might have on this subscription. 
+
+=== Access Reviews
+
+* Concept of *Access reviews* : looking at your groups and your roles, and your users, and ensuring that all permissions are still in line with your expectations.
+    ** Access reviews *are only available through Premium plan*
+    ** Access reviews can have a *frequency* and an *end date*
+
+=== Azure Policy
+
+Another way of implementing governance on Azure is *Azure Policy*.
+
+* You can choose from hundreds of predefined policies, or create your own.
+* You can *enforce* a policy, or just *audit* it.
+    ** By auditing a policy, you will only get a report, and then will have to take (or not) manual actions yourself. 
+
+See also the section on "Govern multiple subscriptions by using Azure Blueprints" in my https://github.com/Ardemius/azure-az900-certification#govern-multiple subscriptions-by-using-azure-blueprints-policy[AZ-900 training notes].
+
+=== Azure Blueprints
+
+Azure Blueprints allow you to *define a repeatable set of governance tools and standard Azure resources* when your cloud environment starts *growing beyond just ONE subscription*.
+
+* In a blueprint, you can upload your ARM templates, you can upload and assign your custom policies, do your custom role stuff, etc.
+* A blueprint can be deployed at the management group level, or in a single subscription.
+    ** but your choice will limit from where the blueprint can be deployed further.
+
+* A blueprint can be saved as *draft*, and only later *published*.
+    ** After having been published, the blueprint can then be assigned with a particular subscription.
+
+* Assigning a blueprint can take up to 30 minutes.
+
+See also the section on "Control and audit your resources by using Azure Policy" in my https://github.com/Ardemius/azure-az900-certification#control-and-audit-your-resources-by-using-Azure-Policy[AZ-900 training notes].
+
+[TIP]
+====
+To know what the *SKUs* you are interested in are, you can use the command :
+
+    az vm list-skus --location westus --output table
+====
+
+=== Hands-on labs: RBAC
+
+* https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies/blob/master/Instructions/Labs/Module_10_Lab.md[Lab: Managing Azure Role-Based Access Control]
+    ** TO BE COMPLETED
+
+=== Quizz
+
+* Question 1: +
+A company has set up an Azure subscription. They have set up a storage account and are currently using the BLOB service. They want to assign permissions to 3 user groups:
+{lb}
+GroupA – This group should have the ability to manage the storage account +
+GroupB – This group should be able to manage containers within a storage account +
+GroupC – This group should be given full access to Azure Storage blob containers and data, including assigning POSIX access control
+{lb}
+You need to assign the relevant Role-Based Access Control ensuring the privilege of least access. +
+Which of the following would you assign to GroupA?
+    ** Owner
+    ** Contributor
+    ** Storage Account Contributor : *GOOD ONE*
+    ** Storage Blob Data Contributor
+    ** Storage Blob Data Owner
+
+* Question 2: +
+A company has just set up an Azure account and subscription. There is a requirement to ensure that IT administrators can only spin up virtual machines of a particular SKU size. Which of the following can help achieve this?
+    ** Create a RBAC role and assign it to the relevant group
+    ** Create an Azure policy and assign it to the subscription : *GOOD ONE*
+    ** Assign the appropriate AD role to the IT administrators' group
+    ** Assign the appropriate subscription policy to the IT administrators' group
+
+* Question 3: +
+A company is planning on using Azure for the various services they offer. They want to ensure that they can bill each department for the resources they consume. They decide to use Azure role-based access control to separate the bills department wise. +
+Would this fulfill the requirement?
+    ** Yes
+    ** No : *GOOD ONE*
+        *** This is used to control access to resources and can't be used for billing purposes
+
+== Section 15: Manage security for applications
+
+=== Introduction to Azure Key Vault
+
+* Azure Key Vault is specialized in *keeping secrets*. +
+With it no secret is kept in the code, this last is replaced by the "go get me the secret" SDK call to the Azure Key Vault.
+
+NOTE: A *HSM* (Hardware Security Module) is a piece of hardware, one use of which is to *generate REALLY random numbers* to "make security more secure". +
+The worst thing for a random number generator being to generate numbers that are predictable in a certain order.
+
+See also the section on "Store and manage secrets by using Azure Key Vault" in my https://github.com/Ardemius/azure-az900-certification#store-and-manage-secrets-by-using-Azure-Key-Vault[AZ-900 training notes].
+
+The heart of the Key Vault are the Keys, Secrets and Certificates : 
+
+    * *secret* : a secret can be any string that your application wants to protect from a limited number of people to view. +
+    Example: When you are working with public API, they often give you some secret to include in your requests
+    * *keys* : like public private keys in SSH, or any private key used for signing things.
+    * *certificates* : security certificates are used for HTTPS or SSL. Certificates are generally useful in the conversation between 2 servers. +
+    Certificates are a valid alternative to password.
+
+=== System assigned managed identities
+
+*Managed identity* basically is a user that can be created by you, or system assigned, and that relates to an application, not a person, which you can give permissions. +
+A *system assigned managed identity* enables Azure resources to authenticate to cloud services (e.g. Azure Key Vault) without storing credentials in code.
+This is indeed the user under which the application runs, and we can use RBAC to assign permissions to the application. 
+
+=== User assigned managed identities
+
+A system assigned managed identity has a drawback: a new one is going to be created for every application, which can quickly be troublesome to maintain. +
+To avoid that, Azure let you create *your own managed identities*, that you can *reuse on common resources*. +
+Doing so, you will assign the same identity to all the apps that need it.
+
+=== Hands-on labs: Azure Key Vault
+
+* https://github.com/MicrosoftLearning/AZ-301-MicrosoftAzureArchitectDesign/blob/master/Instructions/AZ-301T01_Lab_Mod01_Securing%20Secrets%20in%20Azure.md[Lab: Securing Secrets in Azure]
+    ** TO BE DONE
+
+=== Quizz
+
+* Question 1 : You have to ensure that the Virtual Machines use the right mechanism to access the Azure SQL Server backend data store. Which of the following could be a feature to be used for secure access?
+    ** Managed Service Identity : *GOOD ONE*
+    ** Azure Policies
+    ** Connection Monitor
+    ** Azure Tags
+
+* Question 2 : The following requirements need to be met for a Virtual Machine. +
+- The underlying data disks for the Virtual Machine need to be encrypted. +
+- The company does not want to store the encryption keys locally. +
+Which of the following needs to be modified to ensure the Azure Virtual Machines can use the encryption keys in Azure Key Vault?
+    ** Create a Conditional Access policy
+    ** Set the Key vault advanced access policy : *GOOD ONE*
+    ** Set the Key vault basic access policy
+    ** Set an Azure AD Role
+
+* Question 3 : Which of the following would you use to store asymmetric keys to allow for real-time I/O encryption and decryption of Azure SQL database data and log files?
+    ** Azure AD Privileged Identity Management
+    ** Azure AD Managed Service Identity
+    ** Azure Key Vault : *GOOD ONE*
+    ** Azure Security Center
+
+* Question 4 : Your company needs to deploy resources for several departments. These resources will reside in Azure. Each department has a separate requirement when it comes to security. Which of the following would you use to allow applications to retrieve x.509 certificates, stored in an Azure AD-protected resource by using an access token?
+    ** Azure AD Privileged Identity Management
+    ** Azure AD Managed Service Identity : *GOOD ONE*
+    ** Azure Key Vault
+    ** Azure Security Center
+
+== Section 16: Implement an application infrastructure
+
+=== Creation of a Web App
+
+Main characteristics when creating a *Web App* : 
+
+    * Runtime stack (.NET Core X.Y, Java X.Y, Node X.Y, etc.)
+    * Operating System
+    * Region
+    * App *Service Plan* : very much like choosing a hosting plan at a hosting company
+        ** service plans distinguish dev / test environments, production ones, and even "isolated" environments (dedicated environments, not shared, with high performances)
+        ** There is free tiers for dev / test env, "F1" : up to 60 minutes/day of compute, and 1 Go memory
+            *** generally enough for dev purpose
+        ** Higher tiers introduce the notion of *ACU*, Azure Compute Units, which regroups processing speed and memory and "gives them a number" (B1, B2, B3, etc.). +
+        With 100 ACU (B1) you have 1.75 Go memory, with 200 ACU (B2) you have twice more so 3.5 Go memory, etc.
+        ** Higher plans also provide additional features, like auto scale, traffic manager, etc.
+        ** You can deploy multiple Apps under the same web app service plan, with a limit for dev / test plans
+        ** For more details, see https://azure.microsoft.com/en-ca/pricing/details/app-service/windows/
+
+{lb}
+
+* You can enable *VNet integration* : it allows to securely access resources available in or through Azure VNet. 
+    ** In fact, your web app and its SQL database are almost running on the "public" side of Azure, whereas all your VNet stuff is private to you. So you have to "poke a hole" in your VNet to allow some of these services.
+
+* Using *deployment slots*, you can have a second environment to test your web app in another environment that PROD.
+    ** Extra deployment slots created ("staging" one by example) have their own URL (different from the PROD one)
+    ** You can control the traffic redirection of the traffic among your slots through a percentage text field. +
+    image:azure-az303_10.png[]
+    ** A *swap* feature is available that allows you to swap traffic between 2 slots.
+        *** The swapping operation is transparent for the user
+
+* In a *serverless* model, Azure takes over the hosting of the application, and so you don't even need to create an App Service Plan, you are just paying for the execution.
+    ** You are just charged for the microseconds that the web app runs, every time someone visits it, and not when it's not running.
+
+=== Logic App
+
+A *Logic App* is just like a "workflow". It looks like applications like IFTTT, or similar no-code applications where you are "drag and dropping blocks"
+    * The Logic App can run at several location types, either at the regional level or ISE : 
+        ** *regional* level : that's the traditional Logic App Serverless
+        ** *Integration Service Environment* (ISE) : a fully isolated, dedicated environment (like a VM running in a dedicated host). +
+        This ISE is definitively *NOT serverless*, as you are going to pay for it whether or not you use it.
+        *** A Logic App only has *1 unique trigger* and then a sequence of actions that happens once that trigger fires
+    * To test a Logic App like an HTTP Request / Response, the easiest way is to submit the HTTP request with the proper JSON in the body. +
+    In this case, it is mandatory to include in the HTTP request a Content-Type header with value "application/json".
+
+=== Function
+
+* A Function *implies code* and is serverless.
+* The real decision when creating a Function is when chosing the Plan type : 
+    ** *Consumption plan* means serverless
+        *** For a Consumption plan, it's a *public function*, you don't have the option of having access to private Azure services.
+        *** Consumption Functions can run up to 10 minutes
+    ** *App service plan* is NOT serverless, it's just like an App Service.
+    ** *Premium plan*
+        *** Contrary to consumption plan, instances of which being shutdown after some idle time, in the premium plan I can have *"always ready" instances*.
+        *** You can also *choose the number of instances*, up to 20 (performance concern)
+        *** Premium Functions *can also be connected to a VNet*, meaning they can access some private Azure services.
+        *** Premium Functions can run up to 30 minutes by default, which can be modified to any needed value.
+            **** But remember that, generally, Functions should be short pieces of code, that execute quickly.
+
+* Like Logic App, Functions only have *1 unique trigger*.
+* The whole configuration of the Function is also reflected in a JSON file (`function.json`)
+* free limit of 1 000 000 executions per month
+
+== Section 17: Implement container-based applications
+
+On peut utiliser des containers dans Azure via les briques suivantes : 
+    
+    * *Azure Kubernetes Service* (AKS) : la solution la plus souple et la plus puissante pour utiliser des containers dans Azure, mais également la plus compliquée (Kubernetes étant compliqué)
+    * *Web App*
+        ** durant le déploiement, implique le déploiement d'une "serverfarms" en plus de l'application elle-même
+        ** Web App have more features than ACI (backups, scaling, etc.), and are more developer friendly
+        ** They are also slower to deploy
+        ** And they are still less complicated than AKS
+    * *Container instances* (ACI) : décrit par Microsoft comme "the fastest and simpliest way to run a container in Azure"
+        ** avantages : moins compliqué que Kubernetes
+        ** inconvénients : moins puissant que Kubernetes (ne scalent pas comme lui)
+        ** Par contre, ils sont parfaits pour une demo ou un test
+
+* Container registry
+    ** *Docker Hub* ou *Azure Container Registry* (ACR)
+        *** On peut *créer* son propre ACR, qui peut être privé.
+
+.What is an Azure service principal?
+[NOTE]
+====
+An Azure service principal is *an identity created* for use with applications, hosted services, and automated tools *to access Azure resources*. +
+This access is restricted by the *roles assigned to the service principal*, giving you control over which resources can be accessed and at which level. For security reasons, it's always recommended to use service principals with automated tools rather than allowing them to log in with a user identity.
+====
+
+*To deploy a container to AKS*
+
+image:azure-az303_13.jpg[]
+
+.Deployment descriptor .yaml
+image:azure-az303_14.jpg[]
+
+1. Make sure that service principal is set up for AKS : `az aks get-credentials -g <resource group> -n <AKS cluster name>`
+2. Create the .yaml (deployment descriptor) then upload it in Azure
+3. Tell Kubernetes to grab the deployment .yaml file and start deploying the container : `kubectl apply -f acr-newtestapp.yaml`
+
+In the current state, the container has no mean to be accessed through a web browser (no URL, IP address or port). +
+Let's modify the .yaml to do that now, by adding a frontend listening for web traffic (a load balancer here), then serving up using the container to serve that up : 
+
+image:azure-az303_15.jpg[]
+
+To apply the changes, rerun the kubectl apply command : `kubectl apply -f acr-newtestapp.yaml` +
+We can then recheck the services of the pod and see that there a new load balancer running, with a public IP address : 
+
+image:azure-az303_16.jpg[]
+
+=== Quizz
+
+* Question 1: +
+You have a custom container image on your system named Image1. +
+You will be deploying a container of the image using the Azure Web App for Container service. You have to upload the image to Azure. +
+Which of the following could you use to store the image?
+
+    ** Azure Container Registry
+        *** The Azure Container registry is the private Docker registry in Azure.
+
+* Question 2: +
+Docker Desktop is an app for building and sharing containerized apps and microservices available on which of the following operating systems?
+
+    ** Windows, macOS, and Windows Subsystem for Linux (WLS)
+        *** While Docker Desktop is only available for Windows and macOS. It does support using a Linux command line via Windows Subsystem for Linux (WSL)
+
+* Question 3: +
+Suppose your software solution has three critical components. The first component is a web application. The second is a service that processes online orders. The third is a video-rendering and analysis service that runs only as needed and that requires GPU-based VMs. +
+To optimize cost, how many node pools would you deploy in an Azure Kubernetes Service (AKS) cluster to manage the solution?
+
+    ** Deploy a single user node pool when you create the AKS cluster. Assign three nodes per component by using GPU-based VMs, for a total of nine nodes in the node pool. Enable autoscaling on the node pool.
+    ** Deploy three user node pools on the AKS cluster. Create the first and second node pools with standard-sized virtual machines (VMs), and create the third node pool with specialized, GPU-based VMs. Enable the cluster autoscaler on all three node pools.
+    ** Deploy three user node pools on the AKS cluster. Create the first and second node pools with standard-sized VMs and the third node pool with specialized, GPU-based VMs. Enable autoscaling on the first two node pools. Scale the GPU-based node pool manually.
+        *** *GOOD ONE !*
+        *** An AKS cluster with three user node pools gives you flexibility to scale the node count in each pool independently for each component in the solution. Because you didn't enable the autoscaler on the GPU-based node pool, that pool's node count can be scaled to zero to optimize compute costs.
+
+== Section 18: Implement NoSQL databases
+
+* Storing Data with a storage account in *Table Storage* service
+    ** That's the *cheapest form of storage* within Azure
+    ** It's just *slightly more than a blob storage* (~3x more, 0.045$ per Go in LRS)
+        *** It is still extremely cheap in absolute terms, and the cost are predictable
+    ** Drawback : *no SLA*, or extremely "generous" for Azure (2 sec / Mo of data whereas CosmoDB has sub 10 ms response times)
+    ** A storage account can store up to *5 Po of data*
+
+* *Cosmos DB*
+
+    ** a NoSQL, NON relational database
+    ** You first need to chose the type of Cosmos DB database you want to create, and *you will NOT be able to change* it afterwards. +
+    5 choices are possible : 
+
+        *** *Core* (SQL) : also known as *Document DB*, these are *JSON documents* that are stored in Cosmos DB, and that you can *query using SQL* syntax.
+
+        *** *MongoDB database within Cosmos DB* : if you already have an application using MongoDB, you don't change to change anything in your code, and just have to point at the MongoDB database within Cosmos DB
+        *** *Cassandra database within Cosmos DB* : same thing as MongoDB but with Cassandra +
+        -> Those last 2 are primarily for migration or for reusing existing tools.
+
+        *** *Azure Table* (within Cosmos DB) : to use if you want to move your Azure Table storage (from storage account) into a proper enterprise grade database.
+
+        *** *Gremlin* (graph database)
+
+    ** Cosmos DB account : 
+        *** *Encryption is always activated* (you can't turn it off)
+        *** The encryption key can be either service-managed OR customer-manager (in a Azure Key Vault)
+        *** Through the Azure "Keys" section, you can access read-write OR read-only keys
+
+    ** Creation of a CosmosDB container
+        *** *RU/s* (or *RUs*) = *Request Unit per second*, the amount of compute required to read 1 kilobyte of data in 1 second
+        *** Pour une configuration avec un Database Max 400 RU/s, Scott annonce un coût de ~24$ / mois (400 RU/s est le throughput minimum que l'on peut configurer)
+        *** Attention à l'autoscale pour le database throughput. +
+        Cela nous fera gagner de l'argent (on part avec 10% du max RU/s défini), MAIS le scaling n'est PAS instantané (donc attention aux pics de charge très violents)
+
+        *** le point le plus important, la *partition key*.
++
+[IMPORTANT]
+====
+Basically, *partition key* is how Cosmos DB is going to *divide your data physically* across its various partitions.
+
+Your *goal* should always be to have *a roughly equal number of items in every partition*.
+
+BUT, be careful *also not to have 1 lone item in each partition*, because *each query that runs in every partition is its own request unit* (meaning it is gonna be expensive...). +
+1 item per partition is good for the distribution, but very bad for your charges...
+====
+
+    ** add elements and SQL 
+        *** For each SQL query, the cost is given in RUs
+
+Scott's conclusion : 
+
+    * Cosmos DB is *great for massive worldwide apps*
+    * but *NOT for mobile apps*, IoT, social media networks and *where you are going to have millions of users*
+        ** TODO me semble un peu surprenant, à creuser !
+    * Cosmos DB is low latency, high performance designed for global scale
+
+=== Quizz
+
+* Question 1: +
+You have an Azure Cosmos DB account named Account1. This account has a database named DB1 and a container named "customer" in the database. The partition key is set to "city" for the customer container. You now have to change the partition key for the container. Which of the following would you need to implement first?
+
+    ** Create a new container
+        *** In order to change the partition key, you would have to create a new container at first and then copy the contents from the existing container to the new container.
+
+* Question 3: +
+Your organization is planning to use Azure Cosmos DB to store vehicle telemetry data generated from millions of vehicles every second. Which of the following options for your Partition Key will optimize storage distribution?
+
+    ** Vehicule Model
+    ** Vehicule Identification Number (VIN) which looks like WDDEJ9EB6DA032037
+        *** *GOOD ONE!*
+        *** This option will create a more balanced distribution of storage across partition key values.
+
+* Question 4: +
+True or false: the benefits of writing to multiple regions are decreased latency, unlimited scaling potential, and improved availability.
+    ** true
+        *** Writing to multiple regions has many performance benefits. For example, the latency for write operations is less than in non-multi-master accounts.
+
+== Section 19: Implement Azure SQL databases
+
+* Azure SQL Database is the *equivalent of a SQL server* (so a *relational* database) that you might run on your own premises in the cloud.
+    ** It's not totally equivalent to a "real" SQL Server database, but almost (meaning some incompatibilities)
+
+* Difference with Cosmos DB
+    ** Cosmos DB : first an account THEN a database to contain a metaphor
+    ** Azure SQL Database actually has a server database metaphor. +
+    So a database exists but it must run on a server, so we have to create a server for it (meaning a server name)
+
+* *SQL elastic pool* : normally each database you create has its own ressources which are provisioned and that you paid for (so each one has its own cost). +
+The elastic pool allows you to purchase a bigger set of resources that are going to be share between all your databases. +
+This can be useful when one database, but NOT all of them, encounters a spike for a brief moment. +
+It allows you to have a smaller total pool of resources compared to having to provision complete server for each of the databases.
+
+* Azure SQL Database has a rather confusing purchase model
+    ** basically it was just Basic, Standard and Premium
+        *** *DTU* : *Data Transaction Unit*, very similar to the CU (Compute Unit) of VMs or app services. +
+        It is a *combination of CPU speed and the number of cores and the amount of memory* for that machine, all in one sort of metric.
+    ** BUT you can also choose the *vCore-based model* where you can basically *choose yourself the physical characteristics of the hardware (number of cores, memory, storage size, IO throughput)*, meaning you will NOT be based on DTUs.
+
+* Azure SQL Database really *doesn't have a autoscale type metaphor*, meaning you are not expected to move from 10 DTUs to 20 to 50 to 20 to 10 up and down with demand
+    ** To address those use cases, use the serverless option that might be more scalable in that sense.
+
+* Azure SQL Database *geo-replication* option is convenient.
+    ** It requires to create new servers and databases in the wanted regions.
+    ** The primary database is the one on which the writing occurs.
+    ** If a problem occurs on primary, using the console, you can go on one secondary and run a "Forced Failover", which will turn this secondary into the primary
+    ** You can also create a *failover group* to automatically handle the failover : this group will be monitoring for that purpose, with 1 hour to recover if an issue is detected. Otherwise, it is going to switch the primary.
+
+Scott's conclusion : 
+
+    * Azure SQL database has the limitations most SQL databases have (reason why Facebook, Twitter, LinkedIn & co do NOT run on relational databases underneath)
+    * It is an enterprise grade database.
+
+=== Quizz
+
+* Question 1: +
+Who's responsible for performing software updates on your Azure SQL databases and the underlying OS?
+    ** Microsoft Azure. Azure manages the hardware, software updates, and OS patches for you.
+        *** Azure SQL databases are a Platform-as-a-Service (PaaS) offering. Azure manages the hardware, software updates, and OS patches for you.
+
+* Question 2: +
+Your Azure SQL database provides adequate storage and compute power. But you find that you need additional IO throughput. Which performance model might you use?
+    ** DTU
+        *** INCORRECT
+        *** DTU, or Database Transaction Unit, provides a simple, preconfigured purchase option. To increase IO throughput, you would need to move to a higher tier that also increases your storage and compute power, things you don't need.
+    ** vCore
+        *** *GOOD ONE !*
+        *** vCore gives you greater control over what compute and storage resources you create and pay for. You can increase IO throughput but keep the existing amount of compute and storage.
+    ** SQL elastic pool
+
+* Question 3: +
+Which of the following scenarios would likely benefit from a SQL elastic pool.
+    ** You're hosting several SQL servers to track election data for a regional election
+        *** INCORRECT
+        *** This scenario may not benefit from elastic pools as the demand on the servers is likely to increase uniformly at the servers would likely spike at similar times.
+    ** You're running a popular gaming website with customer data stored in an Azure SQL server
+        *** INCORRECT
+        *** Adding a single database to an elastic pool will not provide any cost or performance benefits.
+    ** You manage a cloud platform that tracks inventory for car dealerships
+        *** *GOOD ONE!*
+        *** It's likely each dealership's data would be stored in a separate database. This scenario would likely benefit from elastic pools.
+
+== Section 20: Azure Architecture Center and Design Patterns
+
+* *Azure Architecture Center* from Microsoft : https://docs.microsoft.com/en-us/azure/architecture/
+
+* Azure application architecture fundamentals from Microsoft : https://docs.microsoft.com/en-us/azure/architecture/guide/
+    ** il y a toute une section dédiée au *Cloud Design Patterns* : https://docs.microsoft.com/en-us/azure/architecture/patterns/
+        *** Le site est très bien fait et regroupe les Design Patterns par catégorie : Data management, Design and implementation, Messaging
+
+* Et pour des *samples de code Azure*, voir : https://azure.microsoft.com/en-us/resources/samples/?sort=0
+
+== Section 21: General Architecture Topics
+
+* Il existe une version d'*Azure Cloud Shell* "détachée" de Azure Portal, et disponible à l'URL : https://shell.azure.com
+    ** En fait, aujourd'hui (2022/08), cet URL renvoie sur Cloud Shell dans Azure Portal : https://portal.azure.com/#cloudshell/
+
+Nous allons dérouler ici le Lab 06 "Implement Network Traffic Management" : 
+
+    * https://microsoftlearning.github.io/AZ-104-MicrosoftAzureAdministrator/Instructions/Labs/LAB_06-Implement_Network_Traffic_Management.html
+    * ou https://github.com/MicrosoftLearning/AZ-104-MicrosoftAzureAdministrator/blob/master/Instructions/Labs/LAB_06-Implement_Network_Traffic_Management.md (préférer le 1er lien, il y a un sommaire)
+
+    * Pour un schéma ressemblant à l'architecture Hub and Spoke que nous allons tester, voir ce site : +
+    http://www.deployazure.com/network/virtual-network/azure-vnet-peering-gateway-transit-hub-and-spoke/
+        ** C'est le schéma de cet article qui est utilisé par Scott pour illustré le TP : +
+        image:azure-az303_18.png[] 
+        ** On doit pouvoir communiquer des VMs Mervnet1 (spoke) à Mervnet2 (hub) directement, puis Mervnet2 (hub) à Mervnet3 (spoke), MAIS toute communication de Mervnet1 (spoke) à Mervnet3 (spoke) doit passer par le hub (Mervnet2).
+
+* Usage de la fonctionnalité "Network watcher" >> "Connection troubleshoot" pour vérifier la transitivity du peering des Virtual Network
+    ** Cette fonctionnalité implique l'installation de l'agent du Network watcher sur la VM (~2 min) que l'on souhaite tester.
+
+NOTE: Souvent le terme *"blade"* est utilisé en anglais pour désigné les fonctionnalités d'un site / d'une application accessibles sous forme de menu
+
+== Section 22: Wrapping up and Errata
+
+* Scott : For some years, Microsoft has been changing their *certifications* to be *more "role-based"*
+    ** because Azure has become too large, and one role can't see it all right now. +
+    Hence, certifications were split into 2, to cover a more specific scope, and so to allow more thorough questions
+
+image:azure-az303_19.jpg[] 
+
+.2022/09 Update
+NOTE: Indeed the certification path has changed again since the previous schema.
+The upper path, AZ-300, the "technological" one was replace by the AZ-104 administrator exam, and the lower one, AZ-301 about design considerations, by AZ-305 exam (still about architecture / design concepts)
+
+image:azure-az303_20.jpg[] 
+image:azure-az303_21.jpg[] 
+
+Some tips to allow you to *remember more easily Azure CLI commands* : 
+
+    * *Azure CLI commands reference* : https://learn.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest
+    * All Azure CLI commands follow the pattern : az + one or several words for the "domain / tool" ("vm", "keyvault", "network vnet", etc.) + an action verb ("list", "create", "delete")
+        ** examples : `az vm create`, `az keyvault list`, `az network vnet delete`, `az network vnet subnet create`
+
+The same thing exists for *PowerShell* : 
+
+    * *Azure PowerShell CLI commands reference* : https://learn.microsoft.com/en-us/powershell/module/az.accounts/?view=azps-8.3.0
+    * Azure PowerShell commands pattern : action verb + verb target (often the service name)
+        ** Compared with Azure CLI commands, action verbs are not the same : Get, New, Remove in PowerShell instead of List, Create, Delete in Azure CLI
+        ** examples : `Get-AzVM` (instead of `az vm list`), `New-AzVM` (instead of `az vm create`), `Remove-AzVM` (instead of `az vm delete`) +
+        Or also `Get-AzVirtualNetworkSubnetCconfig`
+
+*Site de labs de Scott* pour pratiquer : https://getcloudskills.com/
+
+    * les AZ-104 et AZ-305 sont dedans pour la nouvelle certification Azure Architect
+    * Un jeu de labs coûtent ~30$, tous sont expliqués pas à pas en vidéo par Scott
+        ** Voici une vidéo de présentation pour le lab de l'AZ-104 : https://www.youtube.com/watch?v=pPKYQwvJ8y0
+    * Essayer à tout hasard le code promo "LAUNCH01" pour avoir 75% de promo (et les 50 du code "50OFF")
+
+Une cartographie créée par Scott des certifications Azure : https://softwarearchitect.ca/wp-content/uploads/2022/08/ScottDuffyAzureCourses.png +
+Cette dernière est extraite du blog de Scott : https://softwarearchitect.ca/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+== AZ-303 official training with Microsoft trainer
+
+=== Configuration of the training
+
+* Labs available from : https://esi.learnondemand.net/
+    ** for questions (support ? ), you can use : https://esisupport.microsoft.com
+* Labs instructions in GitHub : https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies
+
+* Comme on ne peut pas se connecter aux environnements de lab à cause du firewall d'entreprise, Miguel va m'envoyer un code promo directement pour le Portal Azure. +
+    ** Pour l'usage de cette subscription sponsorisée, on peut checker le site https://www.microsoftazuresponsorships.com/Balance +
+    Apparemment, il y a 100$ dessus à la base.
+    ** le site où renseigner le code promo est https://www.microsoftazurepass.com/
+
+* Le support du cours est disponible sur SkillPipe (AZ-303)
+
+Notre trainer est Miguel Angel Carreon (miguelangel.carreon@gmail.com)
+
+NOTE: beaucoup de problèmes pour accéder à l'environnement de test pour un grand nombre de participants (groupe de 40+ personnes) +
+Problèmes aux environnements virtuels de Lab Microsoft, aux firewall d'entreprise, etc. +
+-> La meilleure solution : passer par son poste perso et demander un code promo, MAIS ces derniers sont devenus rares avec la pandémie (cf le formateur)
+
+=== Lab 05 : Implementing Highly Available Azure IaaS Compute Architecture
+
+* Instructions for the Lab : https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies/blob/master/Instructions/Labs/Module_05_Lab.md
+* Resources for the Lab : https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies/tree/master/Allfiles/Labs/05
+
+{lb}
+
+* An *availability set* represents a logical grouping of Azure VMs which controls their physical placement within the same Azure datacenter. Azure makes sure that the VMs within the same availability set run across multiple physical servers, compute racks, storage units, and network switches. If a hardware or software failure happens, only a subset of your VMs are impacted and your overall solution stays operational. Availability Sets are essential for building reliable cloud solutions. With availability sets, Azure offers 99.95% VM uptime SLA.
+
+* *Availability zones* represent unique physical locations within a single Azure region. Each zone is made up of one or more datacenters equipped with independent power, cooling, and networking. The physical separation of availability zones within a region protects applications and data from datacenter failures. Zone-redundant services replicate your applications and data across availability zones to protect from single-points-of-failure. With availability zones, Azure offers 99.99% VM uptime SLA.
+
+* Azure virtual machine *scale sets* let you create and manage a group of identical, load balanced VMs. The number of VM instances can automatically increase or decrease in response to demand or a defined schedule. Scale sets provide high availability to your applications, and allow you to centrally manage, configure, and update many VMs. With virtual machine scale sets, you can build large-scale services for areas such as compute, big data, and container workloads.
+
+.To get the names of the Azure regions that you can use
+[NOTE]
+====
+To identify the names of the Azure regions to use, run : 
+
+    az account list-locations --query "[].{name:name}" -o table
+    
+Make sure to use the notation which does not include a space, e.g. eastus rather than US East.
+====
+
+==== Exercise 1: Implement and analyze highly available Azure VM deployments using availability sets and Azure Load Balancer Basic
+
+The main tasks for this exercise are as follows:
+
+    1. Deploy highly available Azure VMs into an availability set behind an Azure Load Balancer Basic by using Azure Resource Manager templates
+    2. Analyze highly available Azure VMs deployed into an availability set behind an Azure Load Balancer Basic
+    3. Remove Azure resources deployed in the exercise
+
+* Step 4 : From the Cloud Shell pane, run the following to register the Microsoft.Insights resource provider in preparation for the upcoming exercises in this lab:
+
+    az provider register --namespace 'Microsoft.Insights'
+
+    ** "Microsoft.Insights" is the resource provider namespace for Azure Monitor which provides features such as metrics, diagnostic logs, activity logs, autoscale, and metric alerts. +
+    Azure uses concept of *resource providers* to represent entities that act on behalf of various resources. Registering a resource provider costs nothing. +
+    For more details, see : 
+        *** https://stackoverflow.com/questions/42824408/what-is-azures-microsoft-insights-resource-provider
+        *** and https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview#resource-providers
+
+* Step 11 : 
+    ** Public IP address: 40.89.166.85 (az30305a-pip)
+
+* Step 13 : From the Cloud Shell pane, run the following to test load balancing of HTTP traffic to the Azure VMs in the backend pool of the Azure load balancer (replace the <lb_IP_address> placeholder with the IP address of the front end of the load balancer you identified earlier):
+
+    for i in {1..4}; do curl 40.89.166.85; done
+
+    ** which gives: 
++
+----
+thomas@Azure:~$ for i in {1..4}; do curl 40.89.166.85; done
+Hello World from az30305a-vm0
+Hello World from az30305a-vm1
+Hello World from az30305a-vm0
+Hello World from az30305a-vm1
+----
+
+* Step 18 : From the Cloud Shell pane, run the following to test Remote Desktop connectivity via NAT to the first Azure VM in the backend pool of the Azure load balancer (replace the <lb_IP_address> placeholder with the IP address of the front end of the load balancer you identified earlier):
+
+    curl -v telnet://40.89.166.85:33890
+
+* To remove Azure resources deployed in the exercise
+
+    az group list --query "[?starts_with(name,'az30305a-')]".name --output tsv | xargs -L1 bash -c 'az group delete --name $0 --no-wait --yes'
+
+==== Exercise 2: Implement and analyze highly available Azure VM deployments using availability zones and Azure Load Balancer Standard
+
+The main tasks for this exercise are as follows:
+
+    1. Deploy highly available Azure VMs into availability zones behind an Azure Load Balancer Standard by using Azure Resource Manager templates
+    2. Analyze highly available Azure VMs deployed across availability zones behind an Azure Load Balancer Standard
+    3. Remove Azure resources deployed in the exercise
+
+* Step 7 : From the Cloud Shell pane, run the following to deploy an Azure Load Balancer Standard with its backend pool consisting of a pair of Azure VMs hosting Windows Server 2019 Datacenter Core across two availability zones (replace the <vm_Size> placeholder with the size of the Azure VM you intend to use for this deployment, such as Standard_D2s_v3):
+
+    az deployment group create \
+    --resource-group az30305b-labRG \
+    --template-file azuredeploy30305rgb.json \
+    --parameters @azuredeploy30305rgb.parameters.json vmSize=Standard_D2s_v3
+
+* Step 12 : In the Azure portal, navigate to the az30305b-labRG resource group blade and, in the list of resources, select the az30305b-lb load balancer entry, and on the az30305b-lb blade, note the public IP address entry.
+
+    51.11.224.0 (az30305b-pip)
+
+* Step 14 : From the Cloud Shell pane, run the following to test load balancing of HTTP traffic to the Azure VMs in the backend pool of the Azure load balancer (replace the <lb_IP_address> placeholder with the IP address of the front end of the load balancer you identified earlier):
+
+    for i in {1..4}; do curl 51.11.224.0; done
+
+==== Exercise 3: Implement and analyze highly available Azure VM Scale Set deployments using availability zones and Azure Application Gateway
+
+The main tasks for this exercise are as follows:
+
+    1. Deploy a highly available Azure VM Scale Set into availability zones behind an Azure Application Gateway by using Azure Resource Manager templates
+    2. Analyze a highly available Azure VM Scale Set deployed across availability zones behind an Azure Application Gateway
+    3. Remove Azure resources deployed in the exercise
+
+* Step 4 : From the Cloud Shell pane, run the following to create a resource groups (replace the <Azure region> placeholder with the name of the Azure region that is available in your subscription and which is closest to the location of your lab computer):
+
+    az deployment sub create --location 'francecentral' --template-file azuredeploy30305subc.json --parameters rgName=az30305c-labRG rgLocation='francecentral'
+
+* Step 7 : From the Cloud Shell pane, run the following to deploy an Azure Application Gateway with its backend pool consisting of a pair of Azure VMs hosting Windows Server 2019 Datacenter Core across different availability zones (replace the <vm_Size> placeholder with the size of the Azure VM you intend to use for this deployment, such as Standard_D2s_v3):
+
+    az deployment group create --resource-group az30305c-labRG --template-file azuredeploy30305rgc.json --parameters @azuredeploy30305rgc.parameters.json vmSize=Standard_D2s_v3
+
+[IMKPORTANT]
+====
+J'ai rencontré 3 problèmes lors du déploiement des ressources de cet exercice. +
+J'ai changé de region "pour voir" ("eastus" au lieu de "francecentral"), et cela a marché, sans que je ne me l'explique réellement. +
+
+J'ai ensuite trouvé via Service Health qu'il y avait actuellement un problème affectant 3 régions sur Azure, dont "francecentral" : 
++
+.Description du ticket dans Service Health
+----
+Tracking ID
+1KQB-LZG
+Share the below link with your team or use it for reference in your problem management system
+https://app.azure.com/h/1KQB-LZG/d0d6c0
+
+Impacted service(s)
+Application Gateway; Azure Bastion; ExpressRoute; Virtual WAN; VPN Gateway
+Impacted region(s)
+East US; France Central; West Europe
+Impacted subscription(s)
+Pass Azure - Sponsorship (d0d598ce-7e4c-4973-a5da-300449f756c0)
+Last update (2021-09-21T16:43:54.3584814Z)
+Starting at 19:01 UTC on 19 Sep 2021, you have been identified as a customer using one or more of the following services: Application Gateway, Bastion, ExpressRoute, Virtual WAN and VPN Gateway who experienced intermittent failures when creating new deployments of these services. Please, retry in case of failure during the deployment.
+
+Current Status: We have identified an issue with a backend authentication component. We have successfully started deploying the hotfix to the affected regions and it is currently progressing successfully. The next update will be provided at 30 hours, or as events warrant. 
+----
+====
+
+* Step 8 : In the Azure portal, navigate to the az30305c-labRG resource group blade and, in the list of resources, select the az30305c-appgw load balancer entry, and on the az30305c-appgw blade, note the public IP address entry.
+
+    Frontend public IP address:52.150.36.84 (az30305c-appgwpip)
+
+* Step 10 : From the Cloud Shell pane, run the following to test load balancing of HTTP traffic to the Azure VM Scale Set instances in the backend pool of the Azure Application Gateway (replace the <lb_IP_address> placeholder with the IP address of the front end of the gateway you identified earlier):
+
+    for i in {1..4}; do curl 52.150.36.84; done
+
+NOTE: Verify that the returned messages indicate that the requests are being delivered in the round robin manner to the backend Azure VMs
+
+==== Exercise 4: Implementing autoscaling of Azure VM Scale Sets using availability zones and Azure Application Gateway
+
+* Step 2.2 : From the Cloud Shell pane, run the following to trigger autoscaling of the Azure VM Scale Set instances in the backend pool of the Azure Application Gateway (replace the <lb_IP_address> placeholder with the IP address of the front end of the gateway you identified earlier):
+
+    for (( ; ; )); do curl -s 52.150.36.84?[1-10]; done
+
+.Scale Set scaling
+image:azure-az303_11.png[]
+image:azure-az303_12.png[]
+
+==== Exercice 5 : Exercise 5: Implementing vertical scaling of Azure VM Scale Sets
+
+The main tasks for this exercise are as follows:
+
+    1. Scaling compute resources of Azure virtual machine scale set instances.
+    2. Scaling storage resources of Azure virtual machine scale sets instances.
+
+=== Other Labs & infos from the training
+
+.Martin Wozny (membre de la formation)
+----
+After some more research
+The AzureAD PowerShell module (https://docs.microsoft.com/en-us/powershell/module/azuread/?view=azureadps-2.0) used in the Governance lab, does NOT work on either MacOS or Linux.
+And on Windows it only properly works in old PowerShell 5.x.
+For PowerShell core (6/7) you need to load it with backwards compatibility enabled.
+ 
+According to this article (https://github.com/PowerShell/PowerShell/issues/10473), where you should read the last 3 posts, that won't change,
+as the future is now MS Graph (https://github.com/microsoftgraph/msgraph-sdk-powershell)
+ 
+For ref the Azure CLI commands (az ad xxx) provide only 66 commands compared to the 231 commands in the AzureAD PowerShell module.
+----
+
+https://azure.microsoft.com/en-us/updates/azure-dev-spaces-is-retiring-on-31-october-2023/
+
+Other Labs that Microsoft ones : https://github.com/yokawasa/azure-container-labs
+
+== Ressources
+
+D'autres sites permettant de préparer la certification :
+
+    * Le cours Udemy de Scott Duffy (payant) : https://www.udemy.com/course/70534-azure
+    * Ce site d'un personne ayant réussi l'examen et donnant quelques conseils et ressources : https://www.programmingwithwolfgang.com/how-to-pass-az-303-and-az-304-certification-exams/
+
+    * Learning paths on MS Learn : https://docs.microsoft.com/en-us/learn/certifications/exams/az-303#two-ways-to-prepare
+    * MS Learn : https://docs.microsoft.com/en-us/learn/browse/?roles=administrator&products=azure
+    * Azure Code Samples : https://azure.microsoft.com/en-us/resources/samples/?sort=0
+    * Official Azure Documentation : https://docs.microsoft.com/en-us/azure/
+    * Official Microsoft Azure YouTube Channel : https://www.youtube.com/user/windowsazure
+
+Sites de *labs* et *workshops* pour pratiquer : 
+
+    * Azure Citadel - Labs and Workshops : https://azurecitadel.com/
+    * Microsoft Cloud Workshop - More labs and workshops : https://microsoftcloudworkshop.com/
+    * Labs from Microsoft Training on GitHub : 
+        ** https://github.com/MicrosoftLearning/AZ-303-Microsoft-Azure-Architect-Technologies : *LA* ressource officielle de Microsoft pour pratiquer l'AZ-303
+        ** https://github.com/MicrosoftLearning/AZ-104-MicrosoftAzureAdministrator/
+        ** Ces labs de Microsofts sont vraiment des guides "step by step" permettant de manipuler les technologies Azure autour d'un thème donné.
+
+Sites d'examens blancs (*mock exams*), questions / réponses pour s'entraîner : 
+
+    * ExamTopics AZ-303 : https://www.examtopics.com/exams/microsoft/az-303/
+
+== Mock exams
+
+=== Free exam from XXX
+
+----
+Q1) Some question
+
+ ✅ good
+ ❌ bad
+
+
+Q2) Some other question
+----
+
+== Lexique
+
+[glossary]
+ACU:: Azure Compute Units. Notion used for Web Apps service plans to "give a number" to the pair processing speed / memory (like 100 ACU, 200 ACU, etc.)
+FQDN:: Fully Qualified Domain Name
+IAM:: Identity and Access Management
+NIC:: Network Interface
+RBAC:: Role-Based Access Control 
+RCO:: Recovery Time Objectives
+RPO:: Recovery Point Objectives
+SSPR:: Self-Service Password Reset
+WAN:: Wide Area Network. Désigne le réseau informatique connectant les sites d'une entreprise entre eux et à Internet. +
+le SD WAN est évolution du WAN lui conférant davantage d'agilité et de flexibilité. +
+Pour plus de détails, voir https://www.pyxya.fr/le-wan-intelligent/wan-sd-wan-et-limites-actuelles/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
